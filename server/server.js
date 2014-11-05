@@ -5,6 +5,9 @@ var Player = require('./player.js');
 
 var Server = {
 	_players: {},
+	GetPlayer: function (id) {
+		return this._players[id];
+	},
 	Connect: function (socket) {
 		var player = new Player();
 		player.socket = socket;

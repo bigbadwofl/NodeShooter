@@ -19,6 +19,7 @@ var Renderer = {
 };
 
 var Game = {
+    _username: 'player_' + Random.Int(10, 99),
     Init: function () {
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
@@ -34,10 +35,19 @@ var World = {
 
         socket.emit('Request', {
             type: 'World',
-            method: 'GetRoom'
+            method: 'GetRoom',
+            data: {
+                username: Game._username
+            }
         });
     },
     GetRoom: function (data) {
-        $('#room-text').html(data.name + '<br />' + data.description);
+        var players = '';
+        data.players.forEach(function (player) {
+            if (player != Game._username)
+                players += player + '<br />';
+        });
+
+        $('#room-text').html(data.name + '<br />' + data.description + '<br />' + players);
     }
 };

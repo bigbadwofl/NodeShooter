@@ -10,4 +10,5 @@ var Random = {
 	}
 };
 
-module.exports = Random;
+ if (typeof module !== 'undefined' && module.exports)
+	module.exports = Random;

@@ -1,6 +1,6 @@
 var Serializer = {
 	_config: {
-		ROOM: ['name', 'description']
+		ROOM: ['name', 'description', 'players']
 	},
 	Serialize: function (type, object) {
 		var config = this._config[type];
