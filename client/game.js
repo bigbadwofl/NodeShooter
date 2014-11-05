@@ -37,6 +37,7 @@ var Game = {
 
 var World = {
     RequestRoom: function () {
+        $('button').prop('disabled', true);
         $('#room-text div').empty();
 
         socket.emit('Request', {
@@ -57,5 +58,7 @@ var World = {
         $('#room-text .name').html(data.name);
         $('#room-text .description').html(data.description);
         $('#room-text .mobs').html(players);
+
+        $('button').prop('disabled', false);
     }
 };
