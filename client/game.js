@@ -25,9 +25,13 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
-        socket.emit('Player', { username: this._username });
+        socket.on('RequestInfo', function () {
+            socket.emit('Info', { username: Game._username });
 
-        $('button').on('click', function () { World.RequestRoom() });
+            World.RequestRoom();
+        });
+
+        $('button').on('click', function () { World.RequestRoom(); });
     }
 };
 

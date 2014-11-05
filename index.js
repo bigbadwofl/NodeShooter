@@ -17,16 +17,23 @@ app.get(/^(.*)$/, function(req, res, next){
 
 io.on('connection', function (socket) {
     Server.Connect(socket);
+    socket.emit('RequestInfo');
 
     socket.on('disconnect', function () {
 	    Server.Disconnect(socket);
 	});
 
-    socket.on('Player', function (msg) {
+    socket.on('Info', function (msg) {
+        console.log(msg);
         Server._players[socket.id].username = msg.username;
     });
 
     socket.on('Request', function (msg) {
+        if (Server._players[socket.id] == null) {
+            Server.Connect(socket);
+            socket.emit('RequestInfo');
+        }
+
         msg.id = socket.id;
         msg.data || (msg.data = {});
 
