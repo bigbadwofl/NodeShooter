@@ -33,7 +33,7 @@ var Game = {
 
 var World = {
     RequestRoom: function () {
-        $('#room-text').empty();
+        $('#room-text div').empty();
 
         socket.emit('Request', {
             type: 'World',
@@ -50,6 +50,8 @@ var World = {
                 players += player + '<br />';
         });
 
-        $('#room-text').html(data.name + '<br />' + data.description + '<br />' + players);
+        $('#room-text .name').html(data.name);
+        $('#room-text .description').html(data.description);
+        $('#room-text .mobs').html(players);
     }
 };

@@ -8,10 +8,36 @@ div {
 	box-sizing: border-box;
 }
 
+button {
+	width: 100%;
+	height: 5%;
+}
+
 #room-text {
 	width: 100%;
 	height: 20%;
 	background-color: hsl(0, 0%, 10%);
-	color: white;
 	padding: 10px;
+	font-size: 36px;
+}
+
+#room-text div {
+	width: 100%;
+}
+
+#room-text .name {
+	height: 20%;
+	font-weight: bold;
+	text-decoration: underline;
+	color: cyan;
+}
+
+#room-text .description {
+	height: 50%;
+	color: white;
+}
+
+#room-text .mobs {
+	height: 30%;
+	color: yellow;
 }
