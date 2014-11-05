@@ -15,6 +15,13 @@ var Server = {
 
 		this._players[socket.id] = player;
 	},
+	SetName: function (socket, data) {
+		var player = this._players[socket.id];
+		player.username = data.username;
+
+		if (player.room != null)
+			World.SyncRoom(player.room);
+	},
 	Disconnect: function (socket) {
 		var player = this._players[socket.id];
 		if (player.room != null) {

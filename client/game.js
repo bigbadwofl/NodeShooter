@@ -31,13 +31,21 @@ var Game = {
             World.RequestRoom();
         });
 
-        $('button').on('click', function () { World.RequestRoom(); });
+        $('#btnRoom').on('click', function () { World.RequestRoom(); });
+        $('#btnShowLogin').on('click', function () { $('.overlay').show(); });
+
+        $('#btnLogin').on('click', function () { 
+            var username = $('#txtUsername').val();
+            Game._username = username;
+            socket.emit('Info', { username: Game._username });
+            $('.overlay').hide();
+        });
     }
 };
 
 var World = {
     RequestRoom: function () {
-        $('button').prop('disabled', true);
+        $('#btnRoom').prop('disabled', true);
         $('#room-text div').empty();
 
         socket.emit('Request', {

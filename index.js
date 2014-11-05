@@ -24,8 +24,7 @@ io.on('connection', function (socket) {
 	});
 
     socket.on('Info', function (msg) {
-        console.log(msg);
-        Server._players[socket.id].username = msg.username;
+        Server.SetName(socket, msg);
     });
 
     socket.on('Request', function (msg) {
