@@ -16,18 +16,35 @@ var World = {
 		var player = Server.GetPlayer(data.id);
 		var room = player.room;
 
-		if (data.data.username != null) {
-			if (player.room != null) {
-				player.room.RemovePlayer(data.data.username);
-			}
-
-			var room = Random.El(this._rooms);
-			room.AddPlayer(data.data.username);
-			player.room = room;
+		if (player.room != null) {
+			player.room.RemovePlayer(data.id);
+			this.SyncRoom(player.room);
 		}
 
-		data.data = Serializer.Serialize('ROOM', room);
-		Server.Send(data);
+		var room = Random.El(this._rooms);
+		room.AddPlayer(data.id);
+		player.room = room;
+
+		this.SyncRoom(room);
+	},
+	SyncRoom: function (room) {
+		var roomData = Serializer.Serialize('ROOM', room);
+		roomData.players = roomData.players.slice(0);
+
+		for (var i = 0; i < roomData.players.length; i++) {
+			roomData.players[i] = Server._players[roomData.players[i]].username;
+		}
+
+		for (var i = 0; i < room._players.length; i++) {
+			var player = room._players[i];
+
+			Server.Send({
+				id: player,
+				type: 'World',
+				method: 'GetRoom',
+				data: roomData
+			});
+		}
 	}
 };
 

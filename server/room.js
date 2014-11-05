@@ -5,13 +5,13 @@ function Room() {
 	this._description = 'Description ' + Random.Int(1, 100);
 	this._players = [];
 
-	this.AddPlayer = function (name) {
-		this._players.push(name);
+	this.AddPlayer = function (id) {
+		this._players.push(id);
 	};
 
-	this.RemovePlayer = function (name) {
+	this.RemovePlayer = function (id) {
 		for (var i = 0; i < this._players.length; i++) {
-			if (this._players[i] == name) {
+			if (this._players[i] == id) {
 				this._players.splice(i, 1);
 				i--;
 			}

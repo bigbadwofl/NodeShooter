@@ -18,21 +18,12 @@ var Server = {
 	Disconnect: function (socket) {
 		var player = this._players[socket.id];
 		if (player.room != null) {
-			player.room.RemovePlayer(player.username);
+			player.room.RemovePlayer(socket.id);
 
 			var room = player.room;
 			player.room = null;
 
-			for (var p in this._players) {
-				player = this._players[p];
-				if (player.room == room)
-					World.GetRoom({
-						type: 'World',
-						method: 'GetRoom',
-						id: player.id,
-						data: {}
-					});
-			}
+			World.SyncRoom(room);
 		}
 		
 		delete this._players[socket.id];
