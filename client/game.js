@@ -25,6 +25,8 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
+        socket.emit('Player', { username: this._username });
+
         $('button').on('click', function () { World.RequestRoom() });
     }
 };

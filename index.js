@@ -18,6 +18,14 @@ app.get(/^(.*)$/, function(req, res, next){
 io.on('connection', function (socket) {
     Server.Connect(socket);
 
+    socket.on('disconnect', function () {
+	    Server.Disconnect(socket);
+	});
+
+    socket.on('Player', function (msg) {
+        Server._players[socket.id].username = msg.username;
+    });
+
     socket.on('Request', function (msg) {
         msg.id = socket.id;
         msg.data || (msg.data = {});

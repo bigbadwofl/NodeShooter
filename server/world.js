@@ -14,14 +14,17 @@ var World = {
 	},
 	GetRoom: function (data) {
 		var player = Server.GetPlayer(data.id);
-		if (player.room != null) {
-			player.room.RemovePlayer(data.data.username);
+		var room = player.room;
+
+		if (data.data.username != null) {
+			if (player.room != null) {
+				player.room.RemovePlayer(data.data.username);
+			}
+
+			var room = Random.El(this._rooms);
+			room.AddPlayer(data.data.username);
+			player.room = room;
 		}
-
-		var room = Random.El(this._rooms);
-		room.AddPlayer(data.data.username);
-
-		player.room = room;
 
 		data.data = Serializer.Serialize('ROOM', room);
 		Server.Send(data);
