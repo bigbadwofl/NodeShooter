@@ -1,6 +1,11 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+GLOBAL.io = require('socket.io')(http);
+
+var Server = require('./server/server.js');
+GLOBAL.World = require('./server/world.js');
+
+World.Init();
 
 app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/index.html');
@@ -11,17 +16,14 @@ app.get(/^(.*)$/, function(req, res, next){
 });
 
 io.on('connection', function (socket) {
-	socket.on('Move', function (msg) {
-		io.emit('Move', msg);
-	});
+    Server.Connect(socket.id);
 
-	socket.on('Connect', function (msg) {
-		io.emit('Connect', msg);
-	});
+    socket.on('Request', function (msg) {
+        msg.id = socket.id;
+        msg.data || (msg.data = {});
 
-	socket.on('Notify', function (msg) {
-		io.emit('Notify', msg);
-	});
+        GLOBAL[msg.type][msg.method](msg);
+    });
 });
 
 var port = process.env.PORT || 5000;

@@ -1,13 +1,16 @@
 <!doctype html>
 <html>
   <head>
-	<title>Node Shooter</title>
+	<title>Node World</title>
   </head>
   <body onload="Game.Init()" style="background-color:gray">
-	<canvas></canvas>
+	<div id="room-text"></div>
+	<button>get room</button>
 	
 	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-	<script src="/game.js"></script>
+	<link rel="stylesheet" type="text/css" href="/client/game.css">
+
+	<script src="/client/game.js"></script>
   </body>
 </html>
