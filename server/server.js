@@ -5,16 +5,17 @@ var Player = require('./player.js');
 
 var Server = {
 	_players: {},
-	Connect: function (id) {
+	Connect: function (socket) {
 		var player = new Player();
+		player.socket = socket;
 
-		this._players[id] = player;
+		this._players[socket.id] = player;
 	},
 	Send: function (data) {
 		var id = data.id;
 		delete data.id;
 
-		io.emit('Response', data);
+		this._players[id].socket.emit('Response', data);
 	}
 };
 

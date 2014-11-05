@@ -16,7 +16,7 @@ app.get(/^(.*)$/, function(req, res, next){
 });
 
 io.on('connection', function (socket) {
-    Server.Connect(socket.id);
+    Server.Connect(socket);
 
     socket.on('Request', function (msg) {
         msg.id = socket.id;
