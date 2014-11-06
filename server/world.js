@@ -136,8 +136,9 @@ var World = {
 
 		for (var i = 0; i < room._players.length; i++) {
 			var player = room._players[i];
+			var socket = Server.GetPlayer(player).socket;
 
-			Server.Send({
+			socket.emit('Response', {
 				id: player,
 				type: 'World',
 				method: 'GetRoom',

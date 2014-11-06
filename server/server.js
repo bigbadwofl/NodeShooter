@@ -93,12 +93,6 @@ var Server = {
 				}
 			});
 		}
-	},
-	Send: function (data) {
-		var id = data.id;
-		delete data.id;
-
-		this._players[id].socket.emit('Response', data);
 	}
 };
 

@@ -22,7 +22,9 @@ function Room(data) {
 				i--;
 
 				World.SyncRoom(this);
+				Server.Broadcast('the ' + mob.name + ' left', null, null, this);
 				World.SyncRoom(newRoom);
+				Server.Broadcast('the ' + mob.name + ' arrived', null, null, newRoom);
 			}
 		}
 	};
