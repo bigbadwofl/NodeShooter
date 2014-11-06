@@ -8,26 +8,26 @@ GLOBAL.Serializer = require('./server/serializer.js');
 
 World.Init();
 
-app.get('/', function (req, res) {
-	res.sendfile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+    res.sendfile(__dirname + '/index.html');
 });
 
-app.get(/^(.*)$/, function(req, res, next){
-	res.sendfile(__dirname + req.params[0]);
+app.get(/^(.*)$/, function(req, res, next) {
+    res.sendfile(__dirname + req.params[0]);
 });
 
-io.on('connection', function (socket) {
+io.on('connection', function(socket) {
     Server.Connect(socket);
     socket.emit('Response', {
         type: 'Game',
         method: 'SendInfo'
     });
 
-    socket.on('disconnect', function () {
-	    Server.Disconnect(socket);
-	});
-    
-    socket.on('Request', function (msg) {
+    socket.on('disconnect', function() {
+        Server.Disconnect(socket);
+    });
+
+    socket.on('Request', function(msg) {
         if (Server._players[socket.id] == null) {
             Server.Connect(socket);
             socket.emit('RequestInfo');
@@ -41,6 +41,6 @@ io.on('connection', function (socket) {
 });
 
 var port = process.env.PORT || 5000;
-http.listen(port, function () {
-	console.log('listening on *:' + port);
+http.listen(port, function() {
+    console.log('listening on *:' + port);
 });

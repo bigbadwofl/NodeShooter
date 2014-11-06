@@ -1,14 +1,43 @@
 var Room = require('./room.js');
 var Server = require('./server.js');
 var Random = require('./random.js');
+GLOBAL.Zones = require('./zones.js');
 
 var World = {
-	_rooms: [],
+	_rooms: {},
+	_deaths: [],
 	Init: function () {
-		for (var i = 0; i < 5; i++) {
-			var room = new Room();
+		this.LoadZone('City');
+		setInterval(function () {
+			World.ResetZone('City');
+		}, 10000);
+		setInterval(function () {
+			World.Update('City');
+		}, 3000);
+	},
+	LoadZone: function (zoneName) {
+		var zone = Zones[zoneName];
 
-			this._rooms.push(room);
+		zone.Rooms.forEach(function (roomData) {
+			var room = new Room(roomData);
+			World._rooms[room._id] = room;
+		});
+
+		this.ResetZone(zoneName);
+	},
+	ResetZone: function (zoneName) {
+		var zone = Zones[zoneName];
+
+		zone.Rooms.forEach(function (roomData) {
+			var room = World._rooms[roomData.id];
+			if (room.Reset(roomData))
+				World.SyncRoom(room);
+		});
+	},
+	Update: function (zoneName) {
+		for (var r in this._rooms) {
+			var room = this._rooms[r];
+			room.Update();
 		}
 	},
 	GetRoom: function (socket, data) {
@@ -20,11 +49,26 @@ var World = {
 			this.SyncRoom(player.room);
 		}
 
-		var room = Random.El(this._rooms);
+		var room = this._rooms[data.data.id];
 		room.AddPlayer(socket.id);
 		player.room = room;
 
 		this.SyncRoom(room);
+	},
+	Move: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		var room = player.room;
+
+		var exit = room._exits[data.data.direction];
+
+		if (exit == null)
+			return;
+
+		this.GetRoom(socket, {
+			data: {
+				id: exit
+			}
+		});
 	},
 	GetItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);

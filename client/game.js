@@ -7,7 +7,6 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
-        $('#btnRoom').on('click', function () { World.RequestRoom(); });
         $('#btnShowLogin').on('click', function () { $('.overlay').show(); });
 
         $('#btnLogin').on('click', function () { 
@@ -55,24 +54,30 @@ var Game = {
                 username: Game._username 
             }
         });
-        World.RequestRoom();
     }
 };
 
 var World = {
-    RequestRoom: function () {
-        $('#btnRoom').prop('disabled', true);
-
-        socket.emit('Request', {
-            type: 'World',
-            method: 'GetRoom',
-            data: {
-                username: Game._username
-            }
-        });
-    },
     GetRoom: function (data) {
         $('#room-text div').empty();
+
+        var buttonPanel = $('#buttonPanel');
+        buttonPanel.find('.exitButton').remove();
+        for (var direction in data._exits) {
+            var exitTo = data._exits[direction];
+
+            $('<button class="exitButton">' + direction + '</button>')
+                .appendTo(buttonPanel)
+                .on('click', function () {
+                    socket.emit('Request', {
+                        type: 'World',
+                        method: 'Move',
+                        data: {
+                            direction: $(this).html()
+                        }
+                    });
+                });
+        }
 
         data._players.forEach(function (player) {
             if (player != Game._username) {

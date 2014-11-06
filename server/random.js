@@ -7,6 +7,17 @@ var Random = {
 	},
 	El: function (data) {
 		return data[this.Int(data.length - 1)];
+	},
+	Prop: function (data) {
+		var count = 0;
+
+		var temp = [];
+
+		for (var p in data) {
+			temp.push(data[p]);
+		}
+
+		return this.El(temp);
 	}
 };
 

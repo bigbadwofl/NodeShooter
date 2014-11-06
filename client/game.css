@@ -17,7 +17,7 @@ div {
 }
 
 button {
-	width: calc(100% / 3);
+	width: calc(100% / 7);
 	height: 10vh;
 	font-size: 48px;
 	float: left;
