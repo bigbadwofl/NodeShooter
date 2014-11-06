@@ -26,6 +26,17 @@ function Room() {
 		}
 	};
 
+	this.DropItem = function (player, name) {
+		this._items.push(name);
+
+		for (var i = 0; i < player._items.length; i++) {
+			if (player._items[i] == name) {
+				player._items.splice(i, 1);
+				return;
+			}
+		}
+	};
+
 	this.AddPlayer = function (id) {
 		this._players.push(id);
 	};

@@ -39,6 +39,19 @@ var World = {
 			data: Serializer.Serialize('PLAYER', player)
 		});
 	},
+	DropItem: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		var room = player.room;
+
+		room.DropItem(player, data.data.name);
+		this.SyncRoom(room);
+
+		socket.emit('Response', {
+			type: 'Game',
+			method: 'GetPlayer',
+			data: Serializer.Serialize('PLAYER', player)
+		});
+	},
 	SyncRoom: function (room) {
 		var roomData = Serializer.Serialize('ROOM', room);
 		roomData._players = roomData._players.slice(0);

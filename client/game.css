@@ -1,9 +1,15 @@
+@font-face {
+    font-family: bitty;
+    src: url(bitty.ttf);
+}
+
 body {
 	height: 100vh;
 	width: 100vw;
 	margin: 0px;
 	font-size: 48px;
 	background-color: hsl(0, 0%, 10%);
+	font-family: bitty !important;
 }
 
 div {
@@ -12,9 +18,14 @@ div {
 
 button {
 	width: calc(100% / 3);
-	height: 10%;
+	height: 10vh;
 	font-size: 48px;
 	float: left;
+	font-family: bitty !important;
+	border: 0px;
+	border-left: 2px solid hsl(0, 0%, 10%);
+	border-right: 2px solid hsl(0, 0%, 10%);
+	background-color: hsl(0, 0%, 90%);
 }
 
 input {
@@ -22,30 +33,59 @@ input {
 }
 
 #room-text {
-	width: 100%;
+	float: left;
+	width: calc(2 * 100% / 3);
 	padding: 10px;
+	height: 90vh;
 }
 
 #room-text span {
 	display: block;
 	width: 100%;
+	padding-bottom: 5px;
 }
 
 #room-text .name {
-	font-weight: bold;
-	color: cyan;
+	color: hsla(0, 5%, 95%, 1);
+	text-decoration: underline;
 }
 
 #room-text .description {
-	color: white;
+	color: hsla(0, 5%, 85%, 1);
 }
 
 #room-text .mobs {
-	color: yellow;
+	color: hsla(10, 100%, 76%, 1);
 }
 
 #room-text .items {
-	color: green;
+	color: hsla(204, 100%, 76%, 1);
+}
+
+#inventory {
+	float: left;
+	width: calc(100% / 3);
+	height: 100%;
+	border-left: 4px solid hsl(0, 0%, 90%);
+	text-align: center;
+	padding: 10px;
+}
+
+#inventory div {
+	width: 100%;
+}
+
+#inventory-heading {
+	color: hsla(279, 100%, 76%, 1);
+}
+
+#inventory-contents {
+	color: white;
+}
+
+#inventory-contents span {
+	width: 100%;
+	display: block;
 }
 
 #buttonPanel {
