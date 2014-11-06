@@ -3,14 +3,19 @@
   <head>
 	<title>Node World</title>
   </head>
-  <body onload="Game.Init()" style="background-color:gray">
+  <body onload="Game.Init()">
 	<div id="room-text">
 		<span class="name"></span>
 		<span class="description"></span>
-		<span class="mobs"></span>
+		<div class="mobs"></div>
+		<div class="items"></div>
 	</div>
-	<button id="btnRoom">New Room</button>
-	<button id="btnShowLogin">Login/Register</button>
+
+	<div id='buttonPanel'>
+		<button id="btnRoom">New Room</button>
+		<button id="btnShowLogin">Set Name</button>
+		<button id="btnSave">Save</button>
+	</div>
 
 	<div class="overlay">
 		<div>

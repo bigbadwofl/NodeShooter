@@ -1,7 +1,6 @@
 var Room = require('./room.js');
 var Server = require('./server.js');
 var Random = require('./random.js');
-var Serializer = require('./serializer.js');
 
 var World = {
 	_rooms: [],
@@ -12,27 +11,40 @@ var World = {
 			this._rooms.push(room);
 		}
 	},
-	GetRoom: function (data) {
-		var player = Server.GetPlayer(data.id);
+	GetRoom: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
 		if (player.room != null) {
-			player.room.RemovePlayer(data.id);
+			player.room.RemovePlayer(socket.id);
 			this.SyncRoom(player.room);
 		}
 
 		var room = Random.El(this._rooms);
-		room.AddPlayer(data.id);
+		room.AddPlayer(socket.id);
 		player.room = room;
 
 		this.SyncRoom(room);
 	},
+	GetItem: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		var room = player.room;
+
+		room.GetItem(player, data.data.name);
+		this.SyncRoom(room);
+
+		socket.emit('Response', {
+			type: 'Game',
+			method: 'GetPlayer',
+			data: Serializer.Serialize('PLAYER', player)
+		});
+	},
 	SyncRoom: function (room) {
 		var roomData = Serializer.Serialize('ROOM', room);
-		roomData.players = roomData.players.slice(0);
+		roomData._players = roomData._players.slice(0);
 
-		for (var i = 0; i < roomData.players.length; i++) {
-			roomData.players[i] = Server._players[roomData.players[i]].username;
+		for (var i = 0; i < roomData._players.length; i++) {
+			roomData._players[i] = Server._players[roomData._players[i]].username;
 		}
 
 		for (var i = 0; i < room._players.length; i++) {

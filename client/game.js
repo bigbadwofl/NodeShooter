@@ -25,28 +25,41 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
-        socket.on('RequestInfo', function () {
-            socket.emit('Info', { username: Game._username });
-
-            World.RequestRoom();
-        });
-
         $('#btnRoom').on('click', function () { World.RequestRoom(); });
         $('#btnShowLogin').on('click', function () { $('.overlay').show(); });
 
         $('#btnLogin').on('click', function () { 
             var username = $('#txtUsername').val();
             Game._username = username;
-            socket.emit('Info', { username: Game._username });
+            Game.SendInfo();
             $('.overlay').hide();
         });
+
+        $('#btnSave').on('click', function () { 
+            socket.emit('Request', {
+                type: 'Server',
+                method: 'Save'
+            });
+        });
+    },
+    GetPlayer: function (data) {
+        Player = data;
+    },
+    SendInfo: function () {
+        socket.emit('Request', { 
+            type: 'Server',
+            method: 'SetName',
+            data: {
+                username: Game._username 
+            }
+        });
+        World.RequestRoom();
     }
 };
 
 var World = {
     RequestRoom: function () {
         $('#btnRoom').prop('disabled', true);
-        $('#room-text div').empty();
 
         socket.emit('Request', {
             type: 'World',
@@ -57,15 +70,30 @@ var World = {
         });
     },
     GetRoom: function (data) {
-        var players = '';
-        data.players.forEach(function (player) {
-            if (player != Game._username)
-                players += player + '<br />';
+        $('#room-text div').empty();
+
+        data._players.forEach(function (player) {
+            if (player != Game._username) {
+                $('<div>' + player + '</div>').appendTo($('#room-text .mobs'));
+            }
         });
 
-        $('#room-text .name').html(data.name);
-        $('#room-text .description').html(data.description);
-        $('#room-text .mobs').html(players);
+        data._items.forEach(function (item) {
+            $('<div>' + item + '</div>')
+            .appendTo($('#room-text .items'))
+            .on('click', function () {
+                socket.emit('Request', {
+                    type: 'World',
+                    method: 'GetItem',
+                    data: {
+                        name: $(this).html()
+                    }
+                });
+            });
+        });
+
+        $('#room-text .name').html(data._name);
+        $('#room-text .description').html(data._description);
 
         $('button').prop('disabled', false);
     }

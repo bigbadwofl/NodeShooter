@@ -2,8 +2,9 @@ var app = require('express')();
 var http = require('http').Server(app);
 GLOBAL.io = require('socket.io')(http);
 
-var Server = require('./server/server.js');
+GLOBAL.Server = require('./server/server.js');
 GLOBAL.World = require('./server/world.js');
+GLOBAL.Serializer = require('./server/serializer.js');
 
 World.Init();
 
@@ -17,16 +18,15 @@ app.get(/^(.*)$/, function(req, res, next){
 
 io.on('connection', function (socket) {
     Server.Connect(socket);
-    socket.emit('RequestInfo');
+    socket.emit('Response', {
+        type: 'Game',
+        method: 'SendInfo'
+    });
 
     socket.on('disconnect', function () {
 	    Server.Disconnect(socket);
 	});
-
-    socket.on('Info', function (msg) {
-        Server.SetName(socket, msg);
-    });
-
+    
     socket.on('Request', function (msg) {
         if (Server._players[socket.id] == null) {
             Server.Connect(socket);
@@ -36,7 +36,7 @@ io.on('connection', function (socket) {
         msg.id = socket.id;
         msg.data || (msg.data = {});
 
-        GLOBAL[msg.type][msg.method](msg);
+        GLOBAL[msg.type][msg.method](socket, msg);
     });
 });
 
