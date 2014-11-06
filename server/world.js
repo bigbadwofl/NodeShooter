@@ -22,8 +22,6 @@ var World = {
 			var room = new Room(roomData);
 			World._rooms[room._id] = room;
 		});
-
-		this.ResetZone(zoneName);
 	},
 	ResetZone: function (zoneName) {
 		var zone = Zones[zoneName];
