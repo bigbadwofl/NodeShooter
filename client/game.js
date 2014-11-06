@@ -44,7 +44,13 @@ var Game = {
         });
     },
     GetMessage: function (data) {
-        $('#info').html(data.message);
+        var div = $('#info');
+        var html = div.html();
+        html += '<br />' + data.message;
+        div.html(html);
+
+        div = div[0];
+        div.scrollTop = div.scrollHeight;
     },
     SendInfo: function () {
         socket.emit('Request', { 

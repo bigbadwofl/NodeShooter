@@ -7,7 +7,7 @@ var Zones = {
 				description: '',
 				exits: { e: 'r1', w: 'r2' },
 				items: [ 'i0' ],
-				mobs: [ 'm0' ]
+				mobs: [ { id: 'm0', items: [ 'i0' ] } ]
 			},
 			{
 				id: 'r1',
@@ -15,7 +15,7 @@ var Zones = {
 				description: '',
 				exits: { w: 'r0' },
 				items: [ 'i1' ],
-				mobs: [ 'm1' ]
+				mobs: [ { id: 'm1', items: [ 'i1' ] } ]
 			},
 			{
 				id: 'r2',
@@ -23,7 +23,7 @@ var Zones = {
 				description: '',
 				exits: { e: 'r0' },
 				items: [ 'i2' ],
-				mobs: [ 'm2' ]
+				mobs: [ { id: 'm2', items: [ 'i2' ] } ]
 			}
 		],
 		Items: {
@@ -39,15 +39,15 @@ var Zones = {
 		},
 		Mobs: {
 			m0: {
-				name: 'Guard',
+				name: 'City Guard',
 				hp: 10
 			},
 			m1: {
-				name: 'Peasant',
+				name: 'Filthy Peasant',
 				hp: 4
 			},
 			m2: {
-				name: 'Dog',
+				name: 'Mangy Dog',
 				hp: 1
 			}
 		}

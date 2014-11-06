@@ -5,6 +5,7 @@ GLOBAL.io = require('socket.io')(http);
 GLOBAL.Server = require('./server/server.js');
 GLOBAL.World = require('./server/world.js');
 GLOBAL.Serializer = require('./server/serializer.js');
+GLOBAL.Messages = require('./server/messages.js');
 
 World.Init();
 

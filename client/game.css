@@ -7,7 +7,7 @@ body {
 	height: 100vh;
 	width: 100vw;
 	margin: 0px;
-	font-size: 48px;
+	font-size: 72px;
 	background-color: hsl(0, 0%, 10%);
 	font-family: bitty !important;
 }
@@ -19,7 +19,7 @@ div {
 button {
 	width: calc(100% / 7);
 	height: 10vh;
-	font-size: 48px;
+	font-size: 36px;
 	float: left;
 	font-family: bitty !important;
 	border: 0px;
@@ -81,6 +81,8 @@ input {
 	height: 20%;
 	border-top: 4px solid hsl(0, 0%, 90%);
 	color: hsla(335, 100%, 76%, 1);
+	font-size: 36px;
+	overflow-y: auto;
 }
 
 #inventory {

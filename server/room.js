@@ -9,23 +9,6 @@ function Room(data) {
 	this._mobs = [];
 	this._items = [];
 
-	for (var i = 0; i < data.items.length; i++) {
-		var itemData = Zones.City.Items[data.items[i]];
-
-		var item = itemData.name;
-		this._items.push(item);
-	}
-
-	for (var i = 0; i < data.mobs.length; i++) {
-		var mobData = Zones.City.Mobs[data.mobs[i]];
-
-		var mob = {
-			name: mobData.name,
-			hp: mobData.hp
-		};
-		this._mobs.push(mob);
-	}
-
 	this.Update = function () {
 		for (var i = 0; i < this._mobs.length; i++) {
 			var mob = this._mobs[i];
@@ -44,6 +27,33 @@ function Room(data) {
 		}
 	};
 
+	this.AddMob = function (mobData, mobItemData) {
+		var mob = {
+			name: mobData.name,
+			hp: mobData.hp,
+			items: mobItemData
+		};
+		this._mobs.push(mob);
+	};
+
+	this.AddItem = function (itemData) {
+		var item = itemData.name;
+		this._items.push(item);
+	};
+
+	for (var i = 0; i < data.items.length; i++) {
+		var itemData = Zones.City.Items[data.items[i]];
+
+		this.AddItem(itemData);
+	}
+
+	for (var i = 0; i < data.mobs.length; i++) {
+		var mobData = Zones.City.Mobs[data.mobs[i].id];
+		var mobItemData = data.mobs[i].items;
+
+		this.AddMob(mobData, mobItemData);
+	}
+
 	this.Reset = function (data) {
 		var changed = false;
 
@@ -55,16 +65,15 @@ function Room(data) {
 
 			changed = true;
 
-			var item = itemData.name;
-			this._items.push(item);
+			this.AddItem(itemData);
 		}
 
 		for (var i = 0; i < data.mobs.length; i++) {
-			var mobData = Zones.City.Mobs[data.mobs[i]];
+			var mobData = Zones.City.Mobs[data.mobs[i].id];
 
 			var skip = true;
 			for (var j = 0; j < World._deaths.length; j++) {
-				if (World._deaths[j] == mobData.name) {
+				if (World._deaths[j] == data.mobs[i].id) {
 					skip = false;
 					World._deaths.splice(j, 1);
 					break;
@@ -75,11 +84,9 @@ function Room(data) {
 
 			changed = true;
 
-			var mob = {
-				name: mobData.name,
-				hp: mobData.hp
-			};
-			this._mobs.push(mob);
+			var mobItemData = data.mobs[i].items;
+
+			this.AddMob(mobData, mobItemData);
 		}
 
 		return changed;
@@ -115,12 +122,26 @@ function Room(data) {
 			mob.hp--;
 
 			if (mob.hp <= 0) {
-				World._deaths.push(this._mobs[i].name);
-				this._mobs.splice(i, 1);
-			}
+				Server.Broadcast(player.username + ' killed the ' + mob.name, 'you killed the ' + mob.name, player, this);
+				if (mob.items.length > 0)
+					Server.Broadcast('the ' + mob.name + ' dropped something on death', null, null, this);
 
-			return;
+				for (var j = 0; j < mob.items.length; j++) {
+					this.AddItem(Zones.City.Items[mob.items[j]]);
+				}
+
+				World._deaths.push(this._mobs[i].id);
+				this._mobs.splice(i, 1);
+
+				return true;
+			}
+			else
+				Server.Broadcast(player.username + ' hit the ' + mob.name, 'you hit the ' + mob.name, player, this);
+
+			return false;
 		}
+
+		return false;
 	};
 
 	this.AddPlayer = function (id) {

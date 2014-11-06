@@ -42,12 +42,12 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
-		if (player.room != null) {
-			player.room.RemovePlayer(socket.id);
-			this.SyncRoom(player.room);
+		if (room != null) {
+			room.RemovePlayer(socket.id);
+			this.SyncRoom(room);
 		}
 
-		var room = this._rooms[data.data.id];
+		room = this._rooms[data.data.id];
 		room.AddPlayer(socket.id);
 		player.room = room;
 
@@ -105,8 +105,6 @@ var World = {
 		room.AttackMob(player, data.data.name);
 
 		this.SyncRoom(room);
-
-		Server.Broadcast(player.username + ' hit the ' + data.data.name, 'you hit the ' + data.data.name, player, room);
 	},
 	SendMessage: function (socket, data) {
 		var fromPlayer = Server.GetPlayer(socket.id);
