@@ -9,6 +9,14 @@ var Server = {
 	GetPlayer: function (id) {
 		return this._players[id];
 	},
+	GetPlayerName: function (name) {
+		for (var p in this._players) {
+			var player = this._players[p];
+
+			if (player.username == name)
+				return player;
+		}
+	},
 	Connect: function (socket) {
 		var player = new Player();
 		player.socket = socket;
@@ -37,9 +45,7 @@ var Server = {
 			if (result == null)
 				return;
 
-			player._items = JSON.parse(result);
-
-			
+			player._items = JSON.parse(result);	
 
 			socket.emit('Response', {
 				type: 'Game',
@@ -60,6 +66,30 @@ var Server = {
 		}
 		
 		delete this._players[socket.id];
+	},
+	Broadcast: function (generalMessage, specificMessage, specificPlayer) {
+		for (var p in this._players) {
+			var player = this._players[p];
+
+			if ((specificPlayer == null) || (player != specificPlayer)) {
+				player.socket.emit('Response', {
+					type: 'Game',
+					method: 'GetMessage',
+					data: {
+						message: generalMessage
+					}
+				});
+			}
+			else if ((specificPlayer != null) && (player == specificPlayer)) {
+				player.socket.emit('Response', {
+					type: 'Game',
+					method: 'GetMessage',
+					data: {
+						message: specificMessage
+					}
+				});
+			}
+		}
 	},
 	Send: function (data) {
 		var id = data.id;

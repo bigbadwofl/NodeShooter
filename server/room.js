@@ -4,9 +4,10 @@ function Room() {
 	this._name = 'Room ' + Random.Int(1, 100);
 	this._description = 'Description ' + Random.Int(1, 100);
 	this._players = [];
+	this._mobs = [];
 	this._items = [];
 
-	var itemCount = Random.Int(0, 2);
+	var itemCount = Random.Int(0, 1);
 	for (var i = 0; i < itemCount; i++) {
 		var itemPrefixes = ['Broken', 'Iron', 'Steel', 'Copper', 'Silver', 'Golden'];
 		var itemSuffixes = ['Sword', 'Axe', 'Helm', 'Boots', 'Gloves'];
@@ -14,6 +15,21 @@ function Room() {
 		var item = Random.El(itemPrefixes) + ' ' + Random.El(itemSuffixes);
 
 		this._items.push(item);
+	}
+
+	var mobCount = Random.Int(0, 1);
+	for (var i = 0; i < mobCount; i++) {
+		var mobPrefixes = ['Cowardly', 'Strong', 'Sketchy', 'Fiery', 'Magical', 'Rotting'];
+		var mobSuffixes = ['Rat', 'Llama', 'Sloth', 'Ogre', 'Guard'];
+
+		var mob = Random.El(mobPrefixes) + ' ' + Random.El(mobSuffixes);
+
+		mob = {
+			name: mob,
+			hp: Random.Int(2, 5)
+		};
+
+		this._mobs.push(mob);
 	}
 
 	this.GetItem = function (player, name) {
@@ -34,6 +50,22 @@ function Room() {
 				player._items.splice(i, 1);
 				return;
 			}
+		}
+	};
+
+	this.AttackMob = function (player, name) {
+		for (var i = 0; i < this._mobs.length; i++) {
+			var mob = this._mobs[i];
+			if (mob.name != name)
+				continue;
+			
+			mob.hp--;
+
+			if (mob.hp <= 0) {
+				this._mobs.splice(i, 1);
+			}
+
+			return;
 		}
 	};
 

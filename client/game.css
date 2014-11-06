@@ -32,11 +32,16 @@ input {
 	font-size: 48px;
 }
 
-#room-text {
-	float: left;
+#top {
 	width: calc(2 * 100% / 3);
-	padding: 10px;
 	height: 90vh;
+	float: left;
+}
+
+#room-text {
+	width: 100%;
+	padding: 10px;
+	height: 80%;
 }
 
 #room-text span {
@@ -54,12 +59,28 @@ input {
 	color: hsla(0, 5%, 85%, 1);
 }
 
+#room-text .players {
+	color: hsla(119, 100%, 76%, 1);
+}
+
+#room-text .mobs {
+	color: hsla(10, 100%, 76%, 1);
+}
+
 #room-text .mobs {
 	color: hsla(10, 100%, 76%, 1);
 }
 
 #room-text .items {
 	color: hsla(204, 100%, 76%, 1);
+}
+
+#info {
+	padding: 20px;
+	width: 100%;
+	height: 20%;
+	border-top: 4px solid hsl(0, 0%, 90%);
+	color: hsla(335, 100%, 76%, 1);
 }
 
 #inventory {

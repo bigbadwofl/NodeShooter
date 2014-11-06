@@ -44,6 +44,9 @@ var Game = {
             });
         });
     },
+    GetMessage: function (data) {
+        $('#info').html(data.message);
+    },
     SendInfo: function () {
         socket.emit('Request', { 
             type: 'Server',
@@ -73,8 +76,35 @@ var World = {
 
         data._players.forEach(function (player) {
             if (player != Game._username) {
-                $('<div>' + player + '</div>').appendTo($('#room-text .mobs'));
+                $('<div>' + player + '</div>')
+                .appendTo($('#room-text .players'))
+                .on('click', function () {
+                    socket.emit('Request', {
+                        type: 'World',
+                        method: 'SendMessage',
+                        data: {
+                            name: $(this).html(),
+                            message: 'hello'
+                        }
+                    });
+                });
             }
+        });
+
+        data._mobs.forEach(function (mob) {
+            var mobString = mob.name + ' (' + mob.hp + ' hp)';
+            $('<div>' + mobString + '</div>')
+            .appendTo($('#room-text .mobs'))
+            .attr('name', mob.name)
+            .on('click', function () {
+                socket.emit('Request', {
+                    type: 'World',
+                    method: 'AttackMob',
+                    data: {
+                        name: $(this).attr('name')
+                    }
+                });
+            });
         });
 
         data._items.forEach(function (item) {
