@@ -10,10 +10,10 @@ var World = {
 		this.LoadZone('City');
 		setInterval(function () {
 			World.ResetZone('City');
-		}, 10000);
+		}, 60000);
 		setInterval(function () {
 			World.Update('City');
-		}, 3000);
+		}, 5000);
 	},
 	LoadZone: function (zoneName) {
 		var zone = Zones[zoneName];
@@ -82,6 +82,8 @@ var World = {
 			method: 'GetPlayer',
 			data: Serializer.Serialize('PLAYER', player)
 		});
+
+		Server.Broadcast(player.username + ' took: ' + data.data.name, 'you took: ' + data.data.name, player, room);
 	},
 	DropItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
@@ -95,6 +97,8 @@ var World = {
 			method: 'GetPlayer',
 			data: Serializer.Serialize('PLAYER', player)
 		});
+
+		Server.Broadcast(player.username + ' dropped: ' + data.data.name, 'you drop: ' + data.data.name, player, room);
 	},
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
@@ -104,7 +108,7 @@ var World = {
 
 		this.SyncRoom(room);
 
-		Server.Broadcast(player.username + ' hits the ' + data.data.name, 'you hit the ' + data.data.name, player);
+		Server.Broadcast(player.username + ' hit the ' + data.data.name, 'you hit the ' + data.data.name, player, room);
 	},
 	SendMessage: function (socket, data) {
 		var fromPlayer = Server.GetPlayer(socket.id);
@@ -114,7 +118,15 @@ var World = {
 			type: 'Game',
 			method: 'GetMessage',
 			data: {
-				message: fromPlayer.username + ' says ' + data.data.message
+				message: fromPlayer.username + ' said ' + data.data.message
+			}
+		});
+
+		fromPlayer.socket.emit('Response', {
+			type: 'Game',
+			method: 'GetMessage',
+			data: {
+				message: 'you said ' + data.data.message + ' to ' + toPlayer.username
 			}
 		});
 	},

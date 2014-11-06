@@ -74,28 +74,24 @@ var Server = {
 		
 		delete this._players[socket.id];
 	},
-	Broadcast: function (generalMessage, specificMessage, specificPlayer) {
+	Broadcast: function (generalMessage, specificMessage, specificPlayer, room) {
 		for (var p in this._players) {
 			var player = this._players[p];
 
-			if ((specificPlayer == null) || (player != specificPlayer)) {
-				player.socket.emit('Response', {
-					type: 'Game',
-					method: 'GetMessage',
-					data: {
-						message: generalMessage
-					}
-				});
-			}
-			else if ((specificPlayer != null) && (player == specificPlayer)) {
-				player.socket.emit('Response', {
-					type: 'Game',
-					method: 'GetMessage',
-					data: {
-						message: specificMessage
-					}
-				});
-			}
+			if ((room != null) && (player.room != room))
+				continue;
+
+			var message = generalMessage;
+			if ((specificPlayer != null) && (player == specificPlayer))
+				message = specificMessage;
+
+			player.socket.emit('Response', {
+				type: 'Game',
+				method: 'GetMessage',
+				data: {
+					message: message
+				}
+			});
 		}
 	},
 	Send: function (data) {
