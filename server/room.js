@@ -137,8 +137,10 @@ function Room(data) {
 
 				return true;
 			}
-			else
+			else {
 				Server.Broadcast(player.username + ' hit the ' + mob.name, 'you hit the ' + mob.name, player, this);
+				Server.Broadcast('the ' + mob.name + ' hit ' + player.username, 'the ' + mob.name + ' hit you', player, this);
+			}
 
 			return false;
 		}
@@ -146,15 +148,41 @@ function Room(data) {
 		return false;
 	};
 
-	this.AddPlayer = function (id) {
+	this.AddPlayer = function (id, followers) {
 		this._players.push(id);
+
+		if (followers != null) {
+			for (var i = 0; i < followers.length; i++) {
+				this._players.push(followers[i].socket.id);
+			}
+		}
 	};
 
-	this.RemovePlayer = function (id) {
+	this.RemovePlayer = function (id, followers) {
 		for (var i = 0; i < this._players.length; i++) {
 			if (this._players[i] == id) {
 				this._players.splice(i, 1);
 				i--;
+			}
+		}
+
+		if (followers != null) {
+			for (var i = 0; i < followers.length; i++) {
+				var follower = followers[i].socket.id;
+				followers[i].socket.emit('Response', {
+					type: 'Game',
+					method: 'GetMessage',
+					data: {
+						message: 'you follow ' + Server.GetPlayer(id).username
+					}
+				});
+
+				for (var j = 0; j < this._players.length; j++) {
+					if (this._players[j] == follower) {
+						this._players.splice(j, 1);
+						j--;
+					}
+				}
 			}
 		}
 	};

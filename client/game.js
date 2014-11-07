@@ -92,10 +92,9 @@ var World = {
                 .on('click', function () {
                     socket.emit('Request', {
                         type: 'World',
-                        method: 'SendMessage',
+                        method: 'Follow',
                         data: {
-                            name: $(this).html(),
-                            message: 'hello'
+                            name: $(this).html()
                         }
                     });
                 });

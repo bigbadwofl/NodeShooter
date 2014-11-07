@@ -43,12 +43,12 @@ var World = {
 		var room = player.room;
 
 		if (room != null) {
-			room.RemovePlayer(socket.id);
+			room.RemovePlayer(socket.id, player.followers);
 			this.SyncRoom(room);
 		}
 
 		room = this._rooms[data.data.id];
-		room.AddPlayer(socket.id);
+		room.AddPlayer(socket.id, player.followers);
 		player.room = room;
 
 		this.SyncRoom(room);
@@ -102,9 +102,35 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
-		room.AttackMob(player, data.data.name);
+		(function attackCallback() {
+			var killed = room.AttackMob(player, data.data.name);
+			World.SyncRoom(room);
 
-		this.SyncRoom(room);
+			if (!killed)
+				setTimeout(attackCallback, 1000);
+		})();
+	},
+	Follow: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		var followPlayer = Server.GetPlayerName(data.data.name);
+
+		followPlayer.followers.push(player);
+
+		player.socket.emit('Response', {
+			type: 'Game',
+			method: 'GetMessage',
+			data: {
+				message: 'you start following ' + data.data.name
+			}
+		});
+
+		followPlayer.socket.emit('Response', {
+			type: 'Game',
+			method: 'GetMessage',
+			data: {
+				message: player.username + ' starts following you'
+			}
+		});
 	},
 	SendMessage: function (socket, data) {
 		var fromPlayer = Server.GetPlayer(socket.id);
