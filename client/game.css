@@ -9,7 +9,7 @@ body {
 	margin: 0px;
 	font-size: 48px;
 	background-color: hsl(0, 0%, 10%);
-	font-family: bitty !important;
+	font-family: consolas !important;
 }
 
 div {
@@ -21,7 +21,7 @@ button {
 	height: 10vh;
 	font-size: 36px;
 	float: left;
-	font-family: bitty !important;
+	font-family: consolas !important;
 	border: 0px;
 	border-left: 2px solid hsl(0, 0%, 10%);
 	border-right: 2px solid hsl(0, 0%, 10%);
@@ -41,7 +41,7 @@ input {
 #room-text {
 	width: 100%;
 	padding: 10px;
-	height: 80%;
+	height: 60%;
 }
 
 #room-text span {
@@ -52,7 +52,7 @@ input {
 
 #room-text .name {
 	color: hsla(0, 5%, 95%, 1);
-	text-decoration: underline;
+	font-weight: bold;
 }
 
 #room-text .description {
@@ -78,7 +78,7 @@ input {
 #info {
 	padding: 10px;
 	width: 100%;
-	height: 20%;
+	height: 40%;
 	border-top: 4px solid hsl(0, 0%, 90%);
 	color: hsla(335, 100%, 76%, 1);
 	font-size: 36px;

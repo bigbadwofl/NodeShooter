@@ -6,6 +6,8 @@ GLOBAL.Server = require('./server/server.js');
 GLOBAL.World = require('./server/world.js');
 GLOBAL.Serializer = require('./server/serializer.js');
 GLOBAL.Messages = require('./server/messages.js');
+GLOBAL.Events = require('./server/events.js');
+GLOBAL.Util = require('./server/util.js');
 
 World.Init();
 

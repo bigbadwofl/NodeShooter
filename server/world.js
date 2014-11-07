@@ -102,8 +102,21 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
+		if (player._fighting) {
+			player.socket.emit('Response', {
+				type: 'Game',
+				method: 'GetMessage',
+				data: {
+					message: 'you are already fighting'
+				}
+			});
+
+			return;
+		}
+
 		(function attackCallback() {
 			var killed = room.AttackMob(player, data.data.name);
+			player._fighting = !killed;
 			World.SyncRoom(room);
 
 			if (!killed)

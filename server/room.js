@@ -1,9 +1,10 @@
 var Random = require('./random.js');
+var Mob = require('./mob.js');
 
 function Room(data) {
 	this._id = data.id;
 	this._name = data.name;
-	this._description = data._description;
+	this._description = data.description;
 	this._exits = data.exits;
 	this._players = [];
 	this._mobs = [];
@@ -11,31 +12,13 @@ function Room(data) {
 
 	this.Update = function () {
 		for (var i = 0; i < this._mobs.length; i++) {
-			var mob = this._mobs[i];
-
-			if (Random.Int(0, 10) == 0) {
-				var newRoomID = Random.Prop(this._exits);
-				var newRoom = World._rooms[newRoomID];
-
-				this._mobs.splice(i, 1);
-				newRoom._mobs.push(mob);
+			if (this._mobs[i].Move(this))
 				i--;
-
-				World.SyncRoom(this);
-				Server.Broadcast('the ' + mob.name + ' left', null, null, this);
-				World.SyncRoom(newRoom);
-				Server.Broadcast('the ' + mob.name + ' arrived', null, null, newRoom);
-			}
 		}
 	};
 
 	this.AddMob = function (mobID, mobData, mobItemData) {
-		var mob = {
-			id: mobID,
-			name: mobData.name,
-			hp: mobData.hp,
-			items: mobItemData
-		};
+		var mob = new Mob(mobID, mobData, mobItemData);
 		this._mobs.push(mob);
 	};
 
@@ -117,36 +100,11 @@ function Room(data) {
 	};
 
 	this.AttackMob = function (player, name) {
-		for (var i = 0; i < this._mobs.length; i++) {
-			var mob = this._mobs[i];
-			if (mob.name != name)
-				continue;
-			
-			mob.hp--;
-
-			if (mob.hp <= 0) {
-				Server.Broadcast(player.username + ' killed the ' + mob.name, 'you killed the ' + mob.name, player, this);
-				if (mob.items.length > 0)
-					Server.Broadcast('the ' + mob.name + ' dropped something on death', null, null, this);
-
-				for (var j = 0; j < mob.items.length; j++) {
-					this.AddItem(Zones.City.Items[mob.items[j]]);
-				}
-
-				World._deaths.push(mob.id);
-				this._mobs.splice(i, 1);
-
-				return true;
-			}
-			else {
-				Server.Broadcast(player.username + ' hit the ' + mob.name, 'you hit the ' + mob.name, player, this);
-				Server.Broadcast('the ' + mob.name + ' hit ' + player.username, 'the ' + mob.name + ' hit you', player, this);
-			}
-
+		var mob = Util.Find(this, this._mobs, function (mob) { return (mob.name == name); } );
+		if (mob == null)
 			return false;
-		}
-
-		return false;
+		else
+			return mob.Attack(player, this);
 	};
 
 	this.AddPlayer = function (id, followers) {
