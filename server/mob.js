@@ -7,7 +7,7 @@ function Mob(id, data, items) {
 	this.items = items;
 
 	this.Move = function(room) {
-		if (Random.Int(0, 10) > 2)
+		if (Random.Int(0, 10) > 0)
 			return false;
 
 		var newRoomID = Random.Prop(room._exits);

@@ -46,7 +46,7 @@ var Game = {
     GetMessage: function (data) {
         var div = $('#info');
         var html = div.html();
-        html += '<br />' + data.message;
+        html += '<span>' + data.message + '</span>';
         div.html(html);
 
         div = div[0];
