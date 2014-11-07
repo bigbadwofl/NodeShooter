@@ -29,8 +29,9 @@ function Room(data) {
 		}
 	};
 
-	this.AddMob = function (mobData, mobItemData) {
+	this.AddMob = function (mobID, mobData, mobItemData) {
 		var mob = {
+			id: mobID,
 			name: mobData.name,
 			hp: mobData.hp,
 			items: mobItemData
@@ -53,7 +54,7 @@ function Room(data) {
 		var mobData = Zones.City.Mobs[data.mobs[i].id];
 		var mobItemData = data.mobs[i].items;
 
-		this.AddMob(mobData, mobItemData);
+		this.AddMob(data.mobs[i].id, mobData, mobItemData);
 	}
 
 	this.Reset = function (data) {
@@ -88,7 +89,7 @@ function Room(data) {
 
 			var mobItemData = data.mobs[i].items;
 
-			this.AddMob(mobData, mobItemData);
+			this.AddMob(data.mobs[i].id, mobData, mobItemData);
 		}
 
 		return changed;
@@ -132,7 +133,7 @@ function Room(data) {
 					this.AddItem(Zones.City.Items[mob.items[j]]);
 				}
 
-				World._deaths.push(this._mobs[i].id);
+				World._deaths.push(mob.id);
 				this._mobs.splice(i, 1);
 
 				return true;
