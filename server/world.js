@@ -62,6 +62,8 @@ var World = {
 		if (exit == null)
 			return;
 
+		player.Unfollow();
+
 		this.GetRoom(socket, {
 			data: {
 				id: exit
@@ -102,17 +104,8 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
-		if (player._fighting) {
-			player.socket.emit('Response', {
-				type: 'Game',
-				method: 'GetMessage',
-				data: {
-					message: 'you are already fighting'
-				}
-			});
-
-			return;
-		}
+		if (player._fighting)
+			Server.SendMessage(player.socket, 'you are already fighting');
 
 		(function attackCallback() {
 			var killed = room.AttackMob(player, data.data.name);
@@ -124,46 +117,14 @@ var World = {
 		})();
 	},
 	Follow: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		var followPlayer = Server.GetPlayerName(data.data.name);
-
-		followPlayer.followers.push(player);
-
-		player.socket.emit('Response', {
-			type: 'Game',
-			method: 'GetMessage',
-			data: {
-				message: 'you start following ' + data.data.name
-			}
-		});
-
-		followPlayer.socket.emit('Response', {
-			type: 'Game',
-			method: 'GetMessage',
-			data: {
-				message: player.username + ' starts following you'
-			}
-		});
+		Server.GetPlayer(socket.id).Follow(data.data.name);
 	},
 	SendMessage: function (socket, data) {
 		var fromPlayer = Server.GetPlayer(socket.id);
 		var toPlayer = Server.GetPlayerName(data.data.name);
-		
-		toPlayer.socket.emit('Response', {
-			type: 'Game',
-			method: 'GetMessage',
-			data: {
-				message: fromPlayer.username + ' said ' + data.data.message
-			}
-		});
 
-		fromPlayer.socket.emit('Response', {
-			type: 'Game',
-			method: 'GetMessage',
-			data: {
-				message: 'you said ' + data.data.message + ' to ' + toPlayer.username
-			}
-		});
+		Server.SendMessage(toPlayer.socket, fromPlayer.username + ' said ' + data.data.message);
+		Server.SendMessage(fromPlayer.socket, 'you said ' + data.data.message + ' to ' + toPlayer.username);
 	},
 	SyncRoom: function (room) {
 		var roomData = Serializer.Serialize('ROOM', room);

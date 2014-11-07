@@ -88,6 +88,7 @@ input {
 	display: block;
 	width: 100%;
 	padding: 2px 10px 2px 10px;
+	box-sizing: border-box;
 }
 
 #info span:nth-child(2n) {
@@ -95,7 +96,7 @@ input {
 }
 
 #info span:nth-child(2n + 1) {
-	background-color: hsla(0, 0%, 100%, 0.25);
+	background-color: hsla(0, 0%, 100%, 0.15);
 }
 
 #inventory {
