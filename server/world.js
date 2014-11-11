@@ -50,7 +50,8 @@ var World = {
 
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
-			console.log('killed:' + fight._mob.name + ' ' + fight._player._fighting);
+			if (!fight._player._fighting)
+				console.log('killed');
 			
 			World.SyncRoom(fight._player.room);
 
