@@ -60,7 +60,7 @@ var World = {
 						continue;
 
 					var checkFight = this._fights[j];
-					if (checkFight._mob == fight.mob) {
+					if (checkFight._mob == fight._mob) {
 						checkFight._player._fighting = false;
 						i--;
 						j--;
