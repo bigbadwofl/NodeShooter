@@ -120,6 +120,8 @@ var World = {
 			return;
 		}
 
+		player._fighting = true;
+
 		var mob = player.room.GetMob(data.data.name);
 		if (mob == null) {
 			Server.SendMessage(player.socket, "they're not here");
