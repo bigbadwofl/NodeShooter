@@ -23,7 +23,7 @@ var Zones = {
 				description: '',
 				exits: { e: 'r0' },
 				items: [ ],
-				mobs: [ { id: 'm2', items: [ 'i2' ] } ]
+				mobs: [ { id: 'm2', items: [ 'i2' ] }, { id: 'm4', items: [ 'i4' ] } ]
 			}
 		],
 		Items: {
@@ -38,6 +38,9 @@ var Zones = {
 			},
 			i3: {
 				name: 'Broom of Power'
+			},
+			i4: {
+				name: 'Sack of the Absolute'
 			}
 		},
 		Mobs: {
@@ -57,6 +60,10 @@ var Zones = {
 				name: 'Janitor',
 				hp: 20,
 				handler: 'Clean'
+			},
+			m4: {
+				name: 'Krzystov - Master Janitor',
+				hp: 100
 			}
 		}
 	}

@@ -46,19 +46,14 @@ var World = {
 		for (var i = 0; i < this._fights.length; i++) {
 			var fight = this._fights[i];
 
-			console.log(fight._player.username + ' ' + fight._mob.name);
-
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
 			
 			World.SyncRoom(fight._player.room);
 
 			if (killed) {
-				console.log('pre: ' + this._fights.length);
 				this._fights.splice(i, 1);
 				i--;
-
-				console.log('post: ' + this._fights.length);
 			}
 		}
 	},
@@ -130,8 +125,6 @@ var World = {
 			Server.SendMessage(player.socket, "they're not here");
 			return;
 		}
-
-		console.log('set fighting: ' + data.data.name);
 
 		player._fighting = true;
 		mob._fighting = true;
