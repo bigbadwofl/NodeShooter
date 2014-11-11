@@ -95,11 +95,7 @@ var World = {
 		room.GetItem(player, data.data.name);
 		this.SyncRoom(room);
 
-		socket.emit('Response', {
-			type: 'Game',
-			method: 'GetPlayer',
-			data: Serializer.Serialize('PLAYER', player)
-		});
+		Server.SyncPlayer(player);
 
 		Server.Broadcast(player.username + ' took: ' + data.data.name, 'you took: ' + data.data.name, player, room);
 	},
@@ -110,11 +106,7 @@ var World = {
 		room.DropItem(player, data.data.name);
 		this.SyncRoom(room);
 
-		socket.emit('Response', {
-			type: 'Game',
-			method: 'GetPlayer',
-			data: Serializer.Serialize('PLAYER', player)
-		});
+		Server.SyncPlayer(player);
 
 		Server.Broadcast(player.username + ' dropped: ' + data.data.name, 'you drop: ' + data.data.name, player, room);
 	},

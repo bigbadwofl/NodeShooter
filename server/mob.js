@@ -60,11 +60,7 @@ function Mob(id, data, items) {
 			if (doHit) {
 				Server.Broadcast('the ' + this.name + ' hit ' + player.username, 'the ' + this.name + ' hit you', player, room);
 				player._hp--;
-				player.socket.emit('Response', {
-					type: 'Game',
-					method: 'GetPlayer',
-					data: Serializer.Serialize('PLAYER', player)
-				});
+				Server.SyncPlayer(player);
 			}
 			else
 				Server.Broadcast('the ' + this.name + ' missed ' + player.username, 'the ' + this.name + ' missed you', player, room);

@@ -22,6 +22,16 @@ var Game = {
                 method: 'Save'
             });
         });
+
+        $('#btnInventory').on('click', function () { 
+            $('#inventory').show();
+            $('#buttonPanel').hide();
+        });
+
+        $('#btnCloseInventory').on('click', function () {
+            $('#inventory').hide();
+            $('#buttonPanel').show();
+        });
     },
     GetPlayer: function (data) {
         Player = data;

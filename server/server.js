@@ -40,11 +40,7 @@ var Server = {
 		else
 			World.GetRoom(socket, {	data: {	id: 'r0' } });
 
-		socket.emit('Response', {
-			type: 'Game',
-			method: 'GetPlayer',
-			data: Serializer.Serialize('PLAYER', player)
-		});
+		Server.SyncPlayer(player);
 	},
 	Save: function (socket, data) {
 		var player = this._players[socket.id];
@@ -58,13 +54,9 @@ var Server = {
 			if (result == null)
 				return;
 
-			player._items = JSON.parse(result);	
+			player._items = JSON.parse(result);
 
-			socket.emit('Response', {
-				type: 'Game',
-				method: 'GetPlayer',
-				data: Serializer.Serialize('PLAYER', player)
-			});
+			Server.SyncPlayer(player);
 		});
 	},
 	Disconnect: function (socket) {
@@ -105,6 +97,13 @@ var Server = {
 
 			this.SendMessage(player.socket, message);
 		}
+	},
+	SyncPlayer: function (player) {
+		player.socket.emit('Response', {
+			type: 'Game',
+			method: 'GetPlayer',
+			data: Serializer.Serialize('PLAYER', player)
+		});
 	}
 };
 
