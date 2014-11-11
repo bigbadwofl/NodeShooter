@@ -50,14 +50,15 @@ var World = {
 
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
-			if (!fight._player._fighting)
-				console.log('killed');
 			
 			World.SyncRoom(fight._player.room);
 
 			if (killed) {
+				console.log('pre: ' + this._fights.length);
 				this._fights.splice(i, 1);
 				i--;
+
+				console.log('post: ' + this._fights.length);
 			}
 		}
 	},
