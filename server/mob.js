@@ -43,6 +43,8 @@ function Mob(id, data, items) {
 		room.GetItem(this, item.name);
 		World.SyncRoom(room);
 		Server.Broadcast('the ' + this.name + ' picks up some trash', null, null, room);
+
+		console.log(this.items);
 	};
 
 	this.Attack = function(player, room) {
