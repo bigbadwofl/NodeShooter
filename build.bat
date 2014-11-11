@@ -1,5 +1,6 @@
 git add *.*
 git reset node_modules
+git rm node_modules
 git commit -m msg
 git push heroku master
 heroku ps:scale web=1
