@@ -54,6 +54,17 @@ var World = {
 			if (killed) {
 				this._fights.splice(i, 1);
 				i--;
+
+				for (var j = 0; j < this._fights.length; j++) {
+					if (i == j)
+						continue;
+
+					var checkFight = this._fights[j];
+					if (checkFight._mob == fight.mob) {
+						i--;
+						j--;
+					}
+				}
 			}
 		}
 	},
