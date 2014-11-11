@@ -48,7 +48,8 @@ var Game = {
                     type: 'World',
                     method: 'DropItem',
                     data: {
-                        id: $(this).attr('id')
+                        id: $(this).attr('id'),
+                        name: $(this).html()
                     }
                 });
             });
