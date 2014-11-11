@@ -61,6 +61,7 @@ var World = {
 
 					var checkFight = this._fights[j];
 					if (checkFight._mob == fight._mob) {
+						this._fights.splice(j, 1);
 						checkFight._player._fighting = false;
 						if (j < i)
 							i--;
