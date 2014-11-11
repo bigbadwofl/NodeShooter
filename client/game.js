@@ -3,6 +3,7 @@ var socket = io();
 var Game = {
     _username: 'player_' + Random.Int(100, 999),
     Init: function () {
+        console.log('blaaaa');
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
         });
