@@ -6,7 +6,7 @@ var Zones = {
 				name: 'Market Square',
 				description: '',
 				exits: { e: 'r1', w: 'r2' },
-				items: [ 'i0' ],
+				items: [ ],
 				mobs: [ { id: 'm0', items: [ 'i0' ] } ]
 			},
 			{
@@ -14,7 +14,7 @@ var Zones = {
 				name: 'Market Street',
 				description: '',
 				exits: { w: 'r0' },
-				items: [ 'i1' ],
+				items: [ ],
 				mobs: [ { id: 'm3', items: [ 'i3' ] }, { id: 'm1', items: [ 'i1' ] } ]
 			},
 			{
@@ -22,7 +22,7 @@ var Zones = {
 				name: 'Market Street',
 				description: '',
 				exits: { e: 'r0' },
-				items: [ 'i2' ],
+				items: [ ],
 				mobs: [ { id: 'm2', items: [ 'i2' ] } ]
 			}
 		],
