@@ -119,12 +119,12 @@ var World = {
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
 
-		console.log('try attack: ' + data.data.name);
-
 		if (player._fighting) {
 			Server.SendMessage(player.socket, 'you are already fighting');
 			return;
 		}
+
+		console.log('set fighting: ' + data.data.name);
 
 		player._fighting = true;
 
