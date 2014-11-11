@@ -22,20 +22,26 @@ function Room(data) {
 		this._mobs.push(mob);
 	};
 
-	this.AddItem = function(itemData) {
-		var item = itemData.name;
+	this.AddItem = function(id, itemData) {
+		var item = { id: id, name: itemData.name };
 		this._items.push(item);
 	};
 
 	for (var i = 0; i < data.items.length; i++) {
 		var itemData = Zones.City.Items[data.items[i]];
 
-		this.AddItem(itemData);
+		this.AddItem(data.items[i], itemData);
 	}
 
 	for (var i = 0; i < data.mobs.length; i++) {
 		var mobData = Zones.City.Mobs[data.mobs[i].id];
 		var mobItemData = data.mobs[i].items;
+		mobItemData = mobItemData.slice(0);
+		for (var j = 0; j < mobItemData.length; j++) {
+			var tempItem = Zones.City.Items[mobItemData[j]];
+			tempItem.id = mobItemData[j]
+			mobItemData[j] = tempItem;
+		}
 
 		this.AddMob(data.mobs[i].id, mobData, mobItemData);
 	}
@@ -53,7 +59,7 @@ function Room(data) {
 
 			changed = true;
 
-			this.AddItem(itemData);
+			this.AddItem(data.items[i], itemData);
 		}
 
 		for (var i = 0; i < data.mobs.length; i++) {
@@ -82,8 +88,11 @@ function Room(data) {
 
 	this.GetItem = function(player, name) {
 		for (var i = 0; i < this._items.length; i++) {
-			if (this._items[i] == name) {
-				player._items.push(this._items[i]);
+			if (this._items[i].name == name) {
+				if (player.items == null)
+					player._items.push(this._items[i]);
+				else
+					player.items.push(this._items[i]);
 				this._items.splice(i, 1);
 				return;
 			}
@@ -94,11 +103,12 @@ function Room(data) {
 		return Util.Find(this, this._mobs, function (mob) { return (mob.name == name); });
 	};
 
-	this.DropItem = function(player, name) {
-		this._items.push(name);
+	this.DropItem = function(player, id) {
+		var itemData = Zones.City.Items[id];
+		this.AddItem(id, itemData);
 
 		for (var i = 0; i < player._items.length; i++) {
-			if (player._items[i] == name) {
+			if (player._items[i].id == id) {
 				player._items.splice(i, 1);
 				return;
 			}

@@ -99,10 +99,13 @@ var Server = {
 		}
 	},
 	SyncPlayer: function (player) {
+		var data = Serializer.Serialize('PLAYER', player);
+		data._items = data._items.slice(0);
+
 		player.socket.emit('Response', {
 			type: 'Game',
 			method: 'GetPlayer',
-			data: Serializer.Serialize('PLAYER', player)
+			data: data
 		});
 	}
 };

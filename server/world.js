@@ -103,7 +103,7 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
-		room.DropItem(player, data.data.name);
+		room.DropItem(player, data.data.id);
 		this.SyncRoom(room);
 
 		Server.SyncPlayer(player);
@@ -147,6 +147,12 @@ var World = {
 
 		for (var i = 0; i < roomData._players.length; i++) {
 			roomData._players[i] = Server._players[roomData._players[i]].username;
+		}
+
+		roomData._items = roomData._items.slice(0);
+
+		for (var i = 0; i < roomData._items.length; i++) {
+			roomData._items[i] = roomData._items[i].name;
 		}
 
 		for (var i = 0; i < room._players.length; i++) {

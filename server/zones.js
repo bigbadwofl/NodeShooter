@@ -15,7 +15,7 @@ var Zones = {
 				description: '',
 				exits: { w: 'r0' },
 				items: [ 'i1' ],
-				mobs: [ { id: 'm1', items: [ 'i1' ] } ]
+				mobs: [ { id: 'm3', items: [ 'i3' ] }, { id: 'm1', items: [ 'i1' ] } ]
 			},
 			{
 				id: 'r2',
@@ -35,6 +35,9 @@ var Zones = {
 			},
 			i2: {
 				name: 'Potion'
+			},
+			i3: {
+				name: 'Broom of Power'
 			}
 		},
 		Mobs: {
@@ -49,6 +52,11 @@ var Zones = {
 			m2: {
 				name: 'Mangy Dog',
 				hp: 1
+			},
+			m3: {
+				name: 'Janitor',
+				hp: 2,
+				handler: 'Clean'
 			}
 		}
 	}

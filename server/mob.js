@@ -6,10 +6,15 @@ function Mob(id, data, items) {
 	this.hp = data.hp;
 	this.items = items;
 	this._fighting = false;
+	this._handler = data.handler;
 
 	this.Move = function(room) {
-		if ((this._fighting) || (Random.Int(0, 10) > 0))
+		if ((this._fighting) || (Random.Int(0, 10) > 0)) {
+			if ((!this._fighting) && (this._handler != null))
+				this[this._handler](room);
+
 			return false;
+		}
 
 		var newRoomID = Random.Prop(room._exits);
 		var newRoom = World._rooms[newRoomID];
@@ -28,6 +33,18 @@ function Mob(id, data, items) {
 		return true;
 	};
 
+	this.Clean = function (room) {
+		var items = room._items;
+		if (items.length == 0)
+			return;
+
+		var item = Random.El(items);
+
+		room.GetItem(this, item.name);
+		World.SyncRoom(room);
+		Server.Broadcast('the ' + this.name + ' picks up some trash', null, null, room);
+	};
+
 	this.Attack = function(player, room) {
 		var getHit = (Random.Int(0, 10) > 2);
 		if (getHit)
@@ -39,7 +56,7 @@ function Mob(id, data, items) {
 				Server.Broadcast('the ' + this.name + ' dropped something on death', null, null, room);
 
 			for (var j = 0; j < this.items.length; j++) {
-				room.AddItem(Zones.City.Items[this.items[j]]);
+				room.AddItem(this.items[j].id, this.items[j]);
 			}
 
 			World._deaths.push(this.id);

@@ -39,15 +39,16 @@ var Game = {
         var itemDiv = $('#inventory-contents');
         itemDiv.empty();
         Player._items.forEach(function (item) {
-            $('<span>' + item + '</span>')
+            $('<span>' + item.name + '</span>')
             .appendTo(itemDiv)
+            .attr('id', item.id)
             .on('click', function () {
                 var itemName = $(this).html();
                 socket.emit('Request', {
                     type: 'World',
                     method: 'DropItem',
                     data: {
-                        name: itemName
+                        id: $(this).attr('id')
                     }
                 });
             });
