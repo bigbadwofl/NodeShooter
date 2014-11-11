@@ -17,6 +17,9 @@ var Server = {
 				return player;
 		}
 	},
+	Log: function (message) {
+		console.log('[' + moment().format('DD-MM-YY HH:mm:ss') + '] ' + message);
+	},
 	Connect: function (socket) {
 		var player = new Player();
 		player.socket = socket;
@@ -25,6 +28,8 @@ var Server = {
 		this._players[socket.id] = player;
 	},
 	SetName: function (socket, data) {
+		this.Log('Connect: ' + data.data.username);
+
 		var player = this._players[socket.id];
 		player.username = data.data.username;
 
@@ -32,13 +37,14 @@ var Server = {
 
 		if (player.room != null)
 			World.SyncRoom(player.room);
-		else {
-			World.GetRoom(socket, {
-				data: {
-					id: 'r0'
-				}
-			});
-		}
+		else
+			World.GetRoom(socket, {	data: {	id: 'r0' } });
+
+		socket.emit('Response', {
+			type: 'Game',
+			method: 'GetPlayer',
+			data: Serializer.Serialize('PLAYER', player)
+		});
 	},
 	Save: function (socket, data) {
 		var player = this._players[socket.id];
@@ -63,6 +69,9 @@ var Server = {
 	},
 	Disconnect: function (socket) {
 		var player = this._players[socket.id];
+
+		this.Log('Disconnect: ' + player.username);
+
 		if (player.room != null) {
 			player.room.RemovePlayer(socket.id);
 
@@ -94,13 +103,7 @@ var Server = {
 			if ((specificPlayer != null) && (player == specificPlayer))
 				message = specificMessage;
 
-			player.socket.emit('Response', {
-				type: 'Game',
-				method: 'GetMessage',
-				data: {
-					message: message
-				}
-			});
+			this.SendMessage(player.socket, message);
 		}
 	}
 };

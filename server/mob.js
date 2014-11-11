@@ -5,9 +5,10 @@ function Mob(id, data, items) {
 	this.name = data.name;
 	this.hp = data.hp;
 	this.items = items;
+	this._fighting = false;
 
 	this.Move = function(room) {
-		if (Random.Int(0, 10) > 0)
+		if ((this._fighting) || (Random.Int(0, 10) > 0))
 			return false;
 
 		var newRoomID = Random.Prop(room._exits);
@@ -28,7 +29,9 @@ function Mob(id, data, items) {
 	};
 
 	this.Attack = function(player, room) {
-		this.hp--;
+		var getHit = (Random.Int(0, 10) > 2);
+		if (getHit)
+			this.hp--;
 
 		if (this.hp <= 0) {
 			Server.Broadcast(player.username + ' killed the ' + this.name, 'you killed the ' + this.name, player, room);
@@ -45,12 +48,26 @@ function Mob(id, data, items) {
 				return (mob.id == this.id);
 			});
 
-			World.SyncRoom(room);
-
 			return true;
 		} else {
-			Server.Broadcast(player.username + ' hit the ' + this.name, 'you hit the ' + this.name, player, room);
-			Server.Broadcast('the ' + this.name + ' hit ' + player.username, 'the ' + this.name + ' hit you', player, room);
+			var doHit = (Random.Int(0, 10) > 2);
+
+			if (getHit)
+				Server.Broadcast(player.username + ' hit the ' + this.name, 'you hit the ' + this.name, player, room);
+			else
+				Server.Broadcast(player.username + ' missed the ' + this.name, 'you missed the ' + this.name, player, room);
+
+			if (doHit) {
+				Server.Broadcast('the ' + this.name + ' hit ' + player.username, 'the ' + this.name + ' hit you', player, room);
+				player._hp--;
+				player.socket.emit('Response', {
+					type: 'Game',
+					method: 'GetPlayer',
+					data: Serializer.Serialize('PLAYER', player)
+				});
+			}
+			else
+				Server.Broadcast('the ' + this.name + ' missed ' + player.username, 'the ' + this.name + ' missed you', player, room);
 		}
 
 		return false;

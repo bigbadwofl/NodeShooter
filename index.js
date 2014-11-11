@@ -8,6 +8,7 @@ GLOBAL.Serializer = require('./server/serializer.js');
 GLOBAL.Messages = require('./server/messages.js');
 GLOBAL.Events = require('./server/events.js');
 GLOBAL.Util = require('./server/util.js');
+GLOBAL.moment = require('moment');
 
 World.Init();
 
@@ -16,7 +17,11 @@ app.get('/', function(req, res) {
 });
 
 app.get(/^(.*)$/, function(req, res, next) {
-    res.sendfile(__dirname + req.params[0]);
+    var file = req.params[0];
+    if (file == '/favicon.ico')
+        return;
+    else
+        res.sendfile(__dirname + file);
 });
 
 io.on('connection', function(socket) {

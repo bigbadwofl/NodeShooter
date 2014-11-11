@@ -90,6 +90,10 @@ function Room(data) {
 		}
 	};
 
+	this.GetMob = function (name) {
+		return Util.Find(this, this._mobs, function (mob) { return (mob.name == name); });
+	};
+
 	this.DropItem = function(player, name) {
 		this._items.push(name);
 

@@ -6,6 +6,7 @@ GLOBAL.Zones = require('./zones.js');
 var World = {
 	_rooms: {},
 	_deaths: [],
+	_fights: [],
 	Init: function () {
 		this.LoadZone('City');
 		setInterval(function () {
@@ -14,6 +15,9 @@ var World = {
 		setInterval(function () {
 			World.Update('City');
 		}, 5000);
+		setInterval(function () {
+			World.Attack();
+		}, 1000)
 	},
 	LoadZone: function (zoneName) {
 		var zone = Zones[zoneName];
@@ -36,6 +40,20 @@ var World = {
 		for (var r in this._rooms) {
 			var room = this._rooms[r];
 			room.Update();
+		}
+	},
+	Attack: function () {
+		for (var i = 0; i < this._fights.length; i++) {
+			var fight = this._fights[i];
+
+			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
+			fight._player._fighting = !killed;
+			World.SyncRoom(fight._player.room);
+
+			if (killed) {
+				this._fights.splice(i, 1);
+				i--;
+			}
 		}
 	},
 	GetRoom: function (socket, data) {
@@ -102,19 +120,24 @@ var World = {
 	},
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
-		var room = player.room;
 
-		if (player._fighting)
+		if (player._fighting) {
 			Server.SendMessage(player.socket, 'you are already fighting');
+			return;
+		}
 
-		(function attackCallback() {
-			var killed = room.AttackMob(player, data.data.name);
-			player._fighting = !killed;
-			World.SyncRoom(room);
+		var mob = player.room.GetMob(data.data.name);
+		if (mob == null) {
+			Server.SendMessage(player.socket, "they're not here");
+			return;
+		}
 
-			if (!killed)
-				setTimeout(attackCallback, 1000);
-		})();
+		mob._fighting = true;
+
+		this._fights.push({
+			_player: player,
+			_mob: mob
+		});
 	},
 	Follow: function (socket, data) {
 		Server.GetPlayer(socket.id).Follow(data.data.name);

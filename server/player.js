@@ -2,6 +2,7 @@ function Player() {
 	this._items = [];
 	this.followers = [];
 	this._fighting = false;
+	this._hp = 30;
 
 	this.Follow = function (playerName) {
 		var oldFollower = this._following;

@@ -1,7 +1,7 @@
 var socket = io();
 
 var Game = {
-    _username: 'player_' + Random.Int(10, 99),
+    _username: 'player_' + Random.Int(100, 999),
     Init: function () {
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
@@ -42,6 +42,8 @@ var Game = {
                 });
             });
         });
+
+        $('#hud').html('hp: ' + Player._hp);
     },
     GetMessage: function (data) {
         var div = $('#info');

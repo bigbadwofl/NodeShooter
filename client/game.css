@@ -125,6 +125,11 @@ input {
 	display: block;
 }
 
+#hud {
+	color: red;
+	height: 60px;
+}
+
 #buttonPanel {
 	width: 100%;
 	bottom: 0%;
