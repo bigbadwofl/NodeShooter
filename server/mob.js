@@ -8,6 +8,8 @@ function Mob(id, data, items) {
 	this._fighting = false;
 	this._handler = data.handler;
 
+	console.log(this.name + ' ' + this.items);
+
 	this.Move = function(room) {
 		if ((this._fighting) || (Random.Int(0, 10) > 0)) {
 			if ((!this._fighting) && (this._handler != null))
@@ -43,8 +45,6 @@ function Mob(id, data, items) {
 		room.GetItem(this, item.name);
 		World.SyncRoom(room);
 		Server.Broadcast('the ' + this.name + ' picks up some trash', null, null, room);
-
-		console.log(this.items);
 	};
 
 	this.Attack = function(player, room) {

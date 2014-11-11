@@ -53,7 +53,7 @@ function Room(data) {
 			var itemData = Zones.City.Items[data.items[i]];
 
 			if (this._items.some(function(findItem) {
-				return (findItem == itemData.name);
+				return (findItem.id == itemData.id);
 			}))
 				continue;
 
@@ -79,6 +79,13 @@ function Room(data) {
 			changed = true;
 
 			var mobItemData = data.mobs[i].items;
+
+			mobItemData = mobItemData.slice(0);
+			for (var j = 0; j < mobItemData.length; j++) {
+				var tempItem = Zones.City.Items[mobItemData[j]];
+				tempItem.id = mobItemData[j]
+				mobItemData[j] = tempItem;
+			}
 
 			this.AddMob(data.mobs[i].id, mobData, mobItemData);
 		}

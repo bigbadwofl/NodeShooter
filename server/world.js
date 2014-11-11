@@ -11,7 +11,7 @@ var World = {
 		this.LoadZone('City');
 		setInterval(function () {
 			World.ResetZone('City');
-		}, 60000);
+		}, 6000);
 		setInterval(function () {
 			World.Update('City');
 		}, 5000);
