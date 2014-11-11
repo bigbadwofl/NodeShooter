@@ -55,7 +55,7 @@ var Zones = {
 			},
 			m3: {
 				name: 'Janitor',
-				hp: 2,
+				hp: 20,
 				handler: 'Clean'
 			}
 		}
