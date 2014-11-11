@@ -124,16 +124,16 @@ var World = {
 			return;
 		}
 
-		console.log('set fighting: ' + data.data.name);
-
-		player._fighting = true;
-
 		var mob = player.room.GetMob(data.data.name);
 		if (mob == null) {
+
 			Server.SendMessage(player.socket, "they're not here");
 			return;
 		}
 
+		console.log('set fighting: ' + data.data.name);
+
+		player._fighting = true;
 		mob._fighting = true;
 
 		this._fights.push({
