@@ -62,7 +62,8 @@ var World = {
 					var checkFight = this._fights[j];
 					if (checkFight._mob == fight._mob) {
 						checkFight._player._fighting = false;
-						i--;
+						if (j < i)
+							i--;
 						j--;
 					}
 				}
