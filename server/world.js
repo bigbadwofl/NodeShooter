@@ -46,6 +46,8 @@ var World = {
 		for (var i = 0; i < this._fights.length; i++) {
 			var fight = this._fights[i];
 
+			console.log(fight._player.username + ' ' + fight._mob.name);
+
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
 			World.SyncRoom(fight._player.room);
