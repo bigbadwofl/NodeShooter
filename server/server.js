@@ -42,7 +42,7 @@ var Server = {
 
 		Server.SyncPlayer(player);
 	},
-	Save: function (socket, data) {
+	Save: function (socket) {
 		var player = this._players[socket.id];
 
 		GAE.Set('player', player.username, JSON.stringify(player._items));
@@ -61,6 +61,8 @@ var Server = {
 	},
 	Disconnect: function (socket) {
 		var player = this._players[socket.id];
+
+		this.Save(socket);
 
 		this.Log('Disconnect: ' + player.username);
 
