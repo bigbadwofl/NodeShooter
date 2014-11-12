@@ -118,7 +118,7 @@ function Room(data) {
 
 		for (var i = 0; i < player._items.length; i++) {
 			if (player._items[i].id == id) {
-				Server.BroadcastMessage('DropItem', { name: player.username, item: name }, player, this);
+				Server.BroadcastMessage('DropItem', { name: player.username, item: player._items[i].name }, player, this);
 
 				this.AddItem(id, itemData);
 
