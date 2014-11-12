@@ -100,6 +100,9 @@ function Room(data) {
 					player._items.push(this._items[i]);
 				else
 					player.items.push(this._items[i]);
+
+				Server.BroadcastMessage('TakeItem', { name: player.username, item: data.data.name }, player, this);
+
 				this._items.splice(i, 1);
 				return;
 			}
@@ -112,10 +115,13 @@ function Room(data) {
 
 	this.DropItem = function(player, id) {
 		var itemData = Zones.City.Items[id];
-		this.AddItem(id, itemData);
 
 		for (var i = 0; i < player._items.length; i++) {
 			if (player._items[i].id == id) {
+				Server.BroadcastMessage('DropItem', { name: player.username, item: data.data.name }, player, this);
+
+				this.AddItem(id, itemData);
+
 				player._items.splice(i, 1);
 				return;
 			}

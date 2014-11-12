@@ -111,8 +111,6 @@ var World = {
 		this.SyncRoom(room);
 
 		Server.SyncPlayer(player);
-
-		Server.BroadcastMessage('TakeItem', { name: player.username, item: data.data.name }, player, room);
 	},
 	DropItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
@@ -122,8 +120,6 @@ var World = {
 		this.SyncRoom(room);
 
 		Server.SyncPlayer(player);
-
-		Server.BroadcastMessage('DropItem', { name: player.username, item: data.data.name }, player, room);
 	},
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
