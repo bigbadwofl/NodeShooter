@@ -1,47 +1,49 @@
 <!doctype html>
 <html>
-  <head>
+	<head>
 	<title>Node World</title>
-  </head>
-  <body onload="Game.Init()">
-  	<div id="top">
-		<div id="room-text">
-			<span class="name"></span>
-			<span class="description"></span>
-			<div class="players"></div>
-			<div class="mobs"></div>
-			<div class="items"></div>
+	</head>
+	<body onload="Game.Init()">
+	<div id="game">
+		<div id="top">
+			<div id="room-text">
+				<span class="name"></span>
+				<span class="description"></span>
+				<div class="players"></div>
+				<div class="mobs"></div>
+				<div class="items"></div>
+			</div>
+
+			<div id="hud"></div>
+
+			<div id="info"></div>
 		</div>
 
-		<div id="hud"></div>
+		<div id='buttonPanel'>
+			<button id="btnShowLogin">Set Name</button>
+			<button id="btnSave">Save</button>
+			<button id="btnInventory">Inventory</button>
+		</div>
 
-		<div id="info"></div>
-	</div>
-
-	<div id='buttonPanel'>
-		<button id="btnShowLogin">Set Name</button>
-		<button id="btnSave">Save</button>
-		<button id="btnInventory">Inventory</button>
-	</div>
-
-	<div id="inventory">
-		<span id="inventory-heading">Inventory</span>
-		<div id="inventory-contents"></div>
-		<button id="btnCloseInventory">Close</button>
+		<div id="inventory">
+			<span id="inventory-heading">Inventory</span>
+			<div id="inventory-contents"></div>
+			<button id="btnCloseInventory">Close</button>
+		</div>
 	</div>
 
 	<div class="overlay">
 		<div>
 			<input id="txtUsername" type="text" placeholder="username">
-			<button id="btnLogin">Login</button>
+			<button id="btnLogin">login</button>
 		</div>
 	</div>
-	
+
 	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/client/game.css">
 
 	<script src="/server/random.js"></script>
 	<script src="/client/game.js"></script>
-  </body>
-</html>
+	</body>
+	</html>

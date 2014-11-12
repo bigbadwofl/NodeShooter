@@ -4,12 +4,17 @@
 }
 
 body {
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 	margin: 0px;
 	font-size: 48px;
 	background-color: hsl(0, 0%, 10%);
 	font-family: consolas !important;
+}
+
+#game {
+	height: 100vh;
+	display: none;
 }
 
 div {
@@ -144,17 +149,17 @@ input {
 }
 
 .overlay {
+	display: none;
 	width: 100%;
 	height: 100%;
 	top: 0px;
 	left: 0px;
 	background-color: hsla(0, 0%, 0%, 0.95);
-	display: none;
 	position: absolute;
 }
 
 .overlay div {
-	width: 100%;
+	width: 80%;
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -164,9 +169,12 @@ input {
 .overlay div input {
 	width: 100%;
 	height: 10vh;
+	border: 0px;
+	text-align: center;
 }
 
 .overlay div button {
 	width: 100%;
 	height: 10vh;
+	font-size: 48px;
 }

@@ -74,6 +74,12 @@ var Server = {
 		}
 		
 		delete this._players[socket.id];
+
+		socket.emit('Response', {
+			type: 'Game',
+			method: 'Disconnect',
+			data: { }
+		});
 	},
 	SendMessage: function (socket, message) {
 		socket.emit('Response', {

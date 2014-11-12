@@ -7,28 +7,39 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
-        $('#btnShowLogin').on('click', function () { $('.overlay').show(); });
-
-        $('#btnLogin').on('click', function () { 
-            var username = $('#txtUsername').val();
-            Game._username = username;
-            Game.SendInfo();
-            $('.overlay').hide();
+        $('#btnShowLogin').on('click', function() {
+            $('.overlay').show();
         });
 
-        $('#btnSave').on('click', function () { 
+        $('#btnLogin').on('click', function() {
+            var username = $('#txtUsername').val();
+            Game._username = username;
+
+            socket.emit('Request', {
+                type: 'Server',
+                method: 'SetName',
+                data: {
+                    username: Game._username
+                }
+            });
+
+            $('.overlay').hide();
+            $('#game').show();
+        });
+
+        $('#btnSave').on('click', function() {
             socket.emit('Request', {
                 type: 'Server',
                 method: 'Save'
             });
         });
 
-        $('#btnInventory').on('click', function () { 
+        $('#btnInventory').on('click', function() {
             $('#inventory').show();
             $('#buttonPanel').hide();
         });
 
-        $('#btnCloseInventory').on('click', function () {
+        $('#btnCloseInventory').on('click', function() {
             $('#inventory').hide();
             $('#buttonPanel').show();
         });
@@ -57,6 +68,10 @@ var Game = {
 
         $('#hud').html('hp: ' + Player._hp);
     },
+    Disconnect: function () {
+        $('.overlay').show();
+        $('#game').hide();
+    },
     GetMessage: function (data) {
         var div = $('#info');
         var html = div.html();
@@ -67,13 +82,16 @@ var Game = {
         div.scrollTop = div.scrollHeight;
     },
     SendInfo: function () {
-        socket.emit('Request', { 
+        $('#game').hide();
+        $('.overlay').show();
+
+        /*socket.emit('Request', { 
             type: 'Server',
             method: 'SetName',
             data: {
                 username: Game._username 
             }
-        });
+        });*/
     }
 };
 
