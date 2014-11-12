@@ -157,7 +157,7 @@ function Room(data) {
 		for (var i = 0; i < followers.length; i++) {
 			var follower = followers[i];
 
-			Server.SendMessage(follower.socket, 'you follow ' + Server.GetPlayer(id).username);
+			Server.BroadcastMessage('PerformFollow', { name: Server.GetPlayer(id).username }, follower, null);
 
 			Util.RemoveWhere(this, this._players, function(player) {
 				return (player == follower.socket.id);

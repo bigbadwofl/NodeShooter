@@ -112,7 +112,7 @@ var World = {
 
 		Server.SyncPlayer(player);
 
-		Server.Broadcast(player.username + ' took: ' + data.data.name, 'you took: ' + data.data.name, player, room);
+		Server.BroadcastMessage('TakeItem', { name: player.username, item: data.data.name }, player, room);
 	},
 	DropItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
@@ -123,20 +123,19 @@ var World = {
 
 		Server.SyncPlayer(player);
 
-		Server.Broadcast(player.username + ' dropped: ' + data.data.name, 'you drop: ' + data.data.name, player, room);
+		Server.BroadcastMessage('DropItem', { name: player.username, item: data.data.name }, player, room);
 	},
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
 
 		if (player._fighting) {
-			Server.SendMessage(player.socket, 'you are already fighting');
+			Server.BroadcastMessage('AlreadyFighting', {}, player, null);
 			return;
 		}
 
 		var mob = player.room.GetMob(data.data.name);
 		if (mob == null) {
-
-			Server.SendMessage(player.socket, "they're not here");
+			Server.BroadcastMessage('NotHere', {}, player, null);
 			return;
 		}
 
@@ -155,8 +154,8 @@ var World = {
 		var fromPlayer = Server.GetPlayer(socket.id);
 		var toPlayer = Server.GetPlayerName(data.data.name);
 
-		Server.SendMessage(toPlayer.socket, fromPlayer.username + ' said ' + data.data.message);
-		Server.SendMessage(fromPlayer.socket, 'you said ' + data.data.message + ' to ' + toPlayer.username);
+		Server.BroadcastMessage('DoSay', { message: data.data.message }, fromPlayer, null);
+		Server.BroadcastMessage('HearSay', { name: fromPlayer.username, message: data.data.message }, toPlayer, null);
 	},
 	SyncRoom: function (room) {
 		var roomData = Serializer.Serialize('ROOM', room);

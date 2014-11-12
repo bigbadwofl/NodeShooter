@@ -40,14 +40,37 @@ input {
 
 #top {
 	width: calc(2 * 100% / 3);
-	height: 90vh;
+	height: 95%;
 	float: left;
+}
+
+.xp-box {
+	width: 100%;
+	height: 5%;
+	float: left;
+	border-top: 4px solid hsl(0, 0%, 90%);
+	position: relative;
+}
+
+.xp {
+	background-color: green;
+	width: 0%;
+	height: 100%;
+}
+
+.xp-box span {
+	display: block;
+	width: 100%;
+	color: white;
+	top: 0%;
+	text-align: center;
+	font-size: 24px;
 }
 
 #room-text {
 	width: 100%;
 	padding: 10px;
-	height: 60%;
+	height: 55%;
 	overflow-y: auto;
 }
 
@@ -84,7 +107,7 @@ input {
 
 #info {
 	width: 100%;
-	height: 40%;
+	height: 35%;
 	border-top: 4px solid hsl(0, 0%, 90%);
 	color: hsla(335, 100%, 76%, 1);
 	font-size: 28px;
@@ -106,11 +129,23 @@ input {
 	background-color: hsla(0, 0%, 100%, 0.15);
 }
 
+.message-info {
+	color: green;
+}
+
+.message-combat { 
+	color: red;
+}
+
+.message-error { 
+	color: yellow;
+}
+
 #inventory {
 	display: none;
 	float: left;
 	width: calc(100% / 3);
-	height: 100%;
+	height: 95%;
 	border-left: 4px solid hsl(0, 0%, 90%);
 	text-align: center;
 	padding: 10px;
@@ -136,13 +171,13 @@ input {
 #hud {
 	padding-left: 10px;
 	color: red;
-	height: 60px;
+	height: 10%;
 }
 
 #buttonPanel {
 	float: left;
 	width: calc(100% / 3);
-	height: 100%;
+	height: 95%;
 	border-left: 4px solid hsl(0, 0%, 90%);
 	text-align: center;
 	padding: 10px;

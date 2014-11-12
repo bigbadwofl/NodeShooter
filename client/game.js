@@ -1,7 +1,7 @@
 var socket = io();
 
 var Game = {
-    _username: 'player_' + Random.Int(100, 999),
+    _username: '',
     Init: function () {
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
@@ -22,6 +22,10 @@ var Game = {
                     username: Game._username
                 }
             });
+
+            $('#info').empty();
+            $('#inventory').hide();
+            $('#buttonPanel').show();
 
             $('.overlay').hide();
             $('#game').show();
@@ -66,6 +70,10 @@ var Game = {
             });
         });
 
+        //XP Bar
+        $('.xp').css('width', ~~(data._xp * 100) + '%');
+        $('.xp-box span').html('level ' + data._level);
+
         $('#hud').html('hp: ' + Player._hp);
     },
     Disconnect: function () {
@@ -75,7 +83,12 @@ var Game = {
     GetMessage: function (data) {
         var div = $('#info');
         var html = div.html();
-        html += '<span>' + data.message + '</span>';
+
+        data.type || (data.type = 'combat');
+
+        var className = 'class="message-' + data.type + '"';
+
+        html += '<span ' + className + '>' + data.message + '</span>';
         div.html(html);
 
         div = div[0];
@@ -84,14 +97,6 @@ var Game = {
     SendInfo: function () {
         $('#game').hide();
         $('.overlay').show();
-
-        /*socket.emit('Request', { 
-            type: 'Server',
-            method: 'SetName',
-            data: {
-                username: Game._username 
-            }
-        });*/
     }
 };
 
@@ -122,13 +127,13 @@ var World = {
                 $('<div>' + player + '</div>')
                 .appendTo($('#room-text .players'))
                 .on('click', function () {
-                    socket.emit('Request', {
+                    /*socket.emit('Request', {
                         type: 'World',
                         method: 'Follow',
                         data: {
                             name: $(this).html()
                         }
-                    });
+                    });*/
                 });
             }
         });

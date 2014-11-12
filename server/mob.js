@@ -26,9 +26,9 @@ function Mob(id, data, items) {
 		newRoom._mobs.push(this);
 
 		World.SyncRoom(room);
-		Server.Broadcast('the ' + this.name + ' left', null, null, room);
+		Server.BroadcastMessage('MobLeft', { name: this.name }, null, room);
 		World.SyncRoom(newRoom);
-		Server.Broadcast('the ' + this.name + ' arrived', null, null, newRoom);
+		Server.BroadcastMessage('MobArrived', { name: this.name }, null, newRoom);
 
 		return true;
 	};
@@ -42,7 +42,7 @@ function Mob(id, data, items) {
 
 		room.GetItem(this, item.name);
 		World.SyncRoom(room);
-		Server.Broadcast('the ' + this.name + ' picks up some trash', null, null, room);
+		Server.BroadcastMessage('JanitorClean', { name: this.name }, null, room);
 	};
 
 	this.Attack = function(player, room) {
@@ -51,13 +51,15 @@ function Mob(id, data, items) {
 			this.hp--;
 
 		if (this.hp <= 0) {
-			Server.Broadcast(player.username + ' killed the ' + this.name, 'you killed the ' + this.name, player, room);
+			Server.BroadcastMessage('MobKilled', { name: player.username, mob: this.name }, player, room);
 			if (this.items.length > 0)
-				Server.Broadcast('the ' + this.name + ' dropped something on death', null, null, room);
+				Server.BroadcastMessage('MobLoot', { name: this.name }, null, room);
 
 			for (var j = 0; j < this.items.length; j++) {
 				room.AddItem(this.items[j].id, this.items[j]);
 			}
+
+			player.GetXP();
 
 			World._deaths.push(this.id);
 			
@@ -70,17 +72,17 @@ function Mob(id, data, items) {
 			var doHit = (Random.Int(0, 10) > 2);
 
 			if (getHit)
-				Server.Broadcast(player.username + ' hit the ' + this.name, 'you hit the ' + this.name, player, room);
+				Server.BroadcastMessage('MobGetHit', { name: player.username, mob: this.name }, player, room);
 			else
-				Server.Broadcast(player.username + ' missed the ' + this.name, 'you missed the ' + this.name, player, room);
+				Server.BroadcastMessage('MobGetMissed', { name: player.username, mob: this.name }, player, room);
 
 			if (doHit) {
-				Server.Broadcast('the ' + this.name + ' hit ' + player.username, 'the ' + this.name + ' hit you', player, room);
+				Server.BroadcastMessage('MobDoHit', { name: player.username, mob: this.name }, player, room);
 				player._hp--;
 				Server.SyncPlayer(player);
 			}
 			else
-				Server.Broadcast('the ' + this.name + ' missed ' + player.username, 'the ' + this.name + ' missed you', player, room);
+				Server.BroadcastMessage('MobDoMissed', { name: player.username, mob: this.name }, player, room);
 		}
 
 		return false;

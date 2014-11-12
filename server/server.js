@@ -83,32 +83,41 @@ var Server = {
 			data: { }
 		});
 	},
-	SendMessage: function (socket, message) {
+	SendMessage: function (socket, msg, type) {
+		var data = {
+			message: msg,
+			type: type
+		};
+
 		socket.emit('Response', {
 			type: 'Game',
 			method: 'GetMessage',
-			data: {
-				message: message
-			}
+			data: data
 		});
 	},
-	Broadcast: function (generalMessage, specificMessage, specificPlayer, room) {
-		for (var p in this._players) {
-			var player = this._players[p];
+	BroadcastMessage: function (template, data, player, room) {
+		if (player != null) {
+			var msg = Messages.Get(template, data, 'player');
+			this.SendMessage(player.socket, msg.player, msg.type);
+		}
 
-			if ((room != null) && (player.room != room))
-				continue;
+		if (room != null) {
+			for (var p in this._players) {
+				var innerPlayer = this._players[p];
 
-			var message = generalMessage;
-			if ((specificPlayer != null) && (player == specificPlayer))
-				message = specificMessage;
+				if ((innerPlayer.room != room) || ((player != null) && (innerPlayer == player)))
+					continue;
 
-			this.SendMessage(player.socket, message);
+				var msg = Messages.Get(template, data, 'room');
+				this.SendMessage(innerPlayer.socket, msg.room, msg.type);
+			}
 		}
 	},
 	SyncPlayer: function (player) {
 		var data = Serializer.Serialize('PLAYER', player);
 		data._items = data._items.slice(0);
+
+		data._xp = player._xp / player._xpMax;
 
 		player.socket.emit('Response', {
 			type: 'Game',

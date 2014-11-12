@@ -3,6 +3,9 @@ function Player() {
 	this.followers = [];
 	this._fighting = false;
 	this._hp = 30;
+	this._xp = 0;
+	this._xpMax = 10;
+	this._level = 1;
 
 	this.Follow = function (playerName) {
 		var oldFollower = this._following;
@@ -18,8 +21,23 @@ function Player() {
 
 		followPlayer.followers.push(this);
 
-		Server.SendMessage(this.socket, 'you start following ' + playerName);
-		Server.SendMessage(followPlayer.socket, this.username + ' starts following you');
+		Server.BroadcastMessage('DoFollow', { name: followPlayer.username }, this, null);
+		Server.BroadcastMessage('HearFollow', { name: this.username }, followPlayer, null);
+	};
+
+	this.GetXP = function () {
+		this._xp++;
+
+		Server.BroadcastMessage('GetXP', { }, this, null);
+
+		if (this._xp == this._xpMax) {
+			this._xp = 0;
+			this._xpMax += this._xpMax;
+			this._level++;
+			Server.BroadcastMessage('AdvanceLevel', { name: this.username }, this, this.room);
+		}
+
+		Server.SyncPlayer(this);
 	};
 
 	this.Unfollow = function() {
@@ -32,8 +50,8 @@ function Player() {
 		});
 		this._following = null;
 
-		Server.SendMessage(this.socket, 'you stop following ' + followPlayer.username);
-		Server.SendMessage(followPlayer.socket, this.username + ' stops following you');
+		Server.BroadcastMessage('DoUnfollow', { name: followPlayer.username }, this, null);
+		Server.BroadcastMessage('HearUnfollow', { name: this.username }, followPlayer, null);
 	};
 }
 
