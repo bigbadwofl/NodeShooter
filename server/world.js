@@ -46,6 +46,16 @@ var World = {
 		for (var i = 0; i < this._fights.length; i++) {
 			var fight = this._fights[i];
 
+			if ((fight._player == null) || (fight._player.room == null)) {
+				this._fights.splice(i, 1);
+
+				if (Util.FindIndex(this, this._fights, function (f) { return (f._mob == fight._mob); }) == -1)
+					fight._mob._fighting = false;
+
+				i--;
+				continue;
+			}
+
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
 			

@@ -19,3 +19,4 @@
 *Trading
 *All players that helped kill a mob should get xp? Possibly keep track of how many dmg was done and split it that way
 *Chat box
+*Mob prefixes (the janitor, Krzystof)

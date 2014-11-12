@@ -50,9 +50,9 @@ var Server = {
 
 		GAE.Get('player', player.username, function (result) {
 			if (result == null)
-				return;
-
-			player._items = JSON.parse(result);
+				player._items = [];
+			else
+				player._items = JSON.parse(result);
 
 			Server.SyncPlayer(player);
 		});
