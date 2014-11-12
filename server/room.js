@@ -101,7 +101,8 @@ function Room(data) {
 				else
 					player.items.push(this._items[i]);
 
-				Server.BroadcastMessage('TakeItem', { name: player.username, item: name }, player, this);
+				if (player.socket != null)
+					Server.BroadcastMessage('TakeItem', { name: player.username, item: name }, player, this);
 
 				this._items.splice(i, 1);
 				return;
