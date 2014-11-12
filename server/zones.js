@@ -11,7 +11,7 @@ var Zones = {
 			},
 			{
 				id: 'r1',
-				name: 'Market Street',
+				name: 'East Market Street',
 				description: '',
 				exits: { w: 'r0' },
 				items: [ ],
@@ -19,11 +19,19 @@ var Zones = {
 			},
 			{
 				id: 'r2',
-				name: 'Market Street',
+				name: 'West Market Street',
 				description: '',
 				exits: { e: 'r0' },
 				items: [ ],
 				mobs: [ { id: 'm2', items: [ 'i2' ] }, { id: 'm4', items: [ 'i4' ] } ]
+			},
+			{
+				id: 'r3',
+				name: 'Temple',
+				description: '',
+				exits: { s: 'r1' },
+				items: [ ],
+				mobs: [ ]
 			}
 		],
 		Items: {
@@ -46,24 +54,28 @@ var Zones = {
 		Mobs: {
 			m0: {
 				name: 'City Guard',
-				hp: 5
+				lvl: 5,
 			},
 			m1: {
 				name: 'Filthy Peasant',
-				hp: 2
+				lvl: 2
 			},
 			m2: {
 				name: 'Mangy Dog',
-				hp: 1
+				lvl: 1,
+				handler: 'Pee',
+				roam: true
 			},
 			m3: {
 				name: 'Janitor',
-				hp: 3,
-				handler: 'Clean'
+				lvl: 3,
+				handler: 'Clean',
+				roam: true
 			},
 			m4: {
-				name: 'Krzystov - Master Janitor',
-				hp: 10
+				name: 'Krzystov (Master Janitor)',
+				lvl: 10,
+				prefix: ''
 			}
 		}
 	}

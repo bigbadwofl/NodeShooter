@@ -3,13 +3,18 @@ var Random = require('./random.js');
 function Mob(id, data, items) {
 	this.id = id;
 	this.name = data.name;
-	this.hp = data.hp;
+	this.hp = data.lvl;
+	this.lvl = data.lvl;
+	this.dmg = data.lvl;
 	this.items = items;
 	this._fighting = false;
 	this._handler = data.handler;
+	this._roam = data.roam || false;
+	this._prefix = data.prefix;
+	(this._prefix == null) && (this._prefix = 'the ');
 
 	this.Move = function(room) {
-		if ((this._fighting) || (Random.Int(0, 10) > 0)) {
+	if ((!this._roam) || (this._fighting) || (Random.Int(0, 10) > 0)) {
 			if ((!this._fighting) && (this._handler != null))
 				this[this._handler](room);
 
@@ -26,40 +31,30 @@ function Mob(id, data, items) {
 		newRoom._mobs.push(this);
 
 		World.SyncRoom(room);
-		Server.BroadcastMessage('MobLeft', { name: this.name }, null, room);
+		Server.BroadcastMessage('MobLeft', { name: this.name, p: this._prefix }, null, room);
 		World.SyncRoom(newRoom);
-		Server.BroadcastMessage('MobArrived', { name: this.name }, null, newRoom);
+		Server.BroadcastMessage('MobArrived', { name: this.name, p: this._prefix }, null, newRoom);
 
 		return true;
-	};
-
-	this.Clean = function (room) {
-		var items = room._items;
-		if (items.length == 0)
-			return;
-
-		var item = Random.El(items);
-
-		room.GetItem(this, item.name);
-		World.SyncRoom(room);
-		Server.BroadcastMessage('JanitorClean', { name: this.name }, null, room);
 	};
 
 	this.Attack = function(player, room) {
 		var getHit = (Random.Int(0, 10) > 2);
 		if (getHit)
-			this.hp--;
+			this.hp -= player._level;
+
+		var data = { name: player.username, mob: this.name, p: this._prefix };
 
 		if (this.hp <= 0) {
-			Server.BroadcastMessage('MobKilled', { name: player.username, mob: this.name }, player, room);
+			Server.BroadcastMessage('MobKilled', data, player, room);
 			if (this.items.length > 0)
-				Server.BroadcastMessage('MobLoot', { name: this.name }, null, room);
+				Server.BroadcastMessage('MobLoot', { name: this.name, p: this._prefix }, null, room);
 
 			for (var j = 0; j < this.items.length; j++) {
 				room.AddItem(this.items[j].id, this.items[j]);
 			}
 
-			player.GetXP();
+			player.GetXP(this);
 
 			World._deaths.push(this.id);
 			
@@ -71,21 +66,50 @@ function Mob(id, data, items) {
 		} else {
 			var doHit = (Random.Int(0, 10) > 2);
 
-			if (getHit)
-				Server.BroadcastMessage('MobGetHit', { name: player.username, mob: this.name }, player, room);
-			else
-				Server.BroadcastMessage('MobGetMissed', { name: player.username, mob: this.name }, player, room);
+			var doBroadcast = function (message) { Server.BroadcastMessage(message, data, player, room); };
+
+			if (getHit) 
+				doBroadcast('MobGetHit');
+			else 
+				doBroadcast('MobGetMissed');
 
 			if (doHit) {
-				Server.BroadcastMessage('MobDoHit', { name: player.username, mob: this.name }, player, room);
-				player._hp--;
+				player.TakeDamage(this);
 				Server.SyncPlayer(player);
 			}
 			else
-				Server.BroadcastMessage('MobDoMissed', { name: player.username, mob: this.name }, player, room);
+				doBroadcast('MobDoMissed');
 		}
 
 		return false;
+	};
+
+	this.Clean = function (room) {
+		var items = room._items;
+		if (items.length == 0)
+			return;
+
+		var item = Random.El(items);
+
+		room.GetItem(this, item.name);
+		World.SyncRoom(room);
+		Server.BroadcastMessage('JanitorClean', { name: this.name, p: this._prefix }, null, room);
+	};
+
+	this.Pee = function (room) {
+		if (!Random.Roll(7))
+			return;
+
+		var mobs = room._mobs;
+		if (mobs.length == 0)
+			return;
+
+		var mob = this;
+
+		while (mob == this)
+			mob = Random.El(mobs);
+
+		Server.BroadcastMessage('DogPee', { name: this.name, target: mob.name, p: mob._prefix }, null, room);		
 	};
 }
 

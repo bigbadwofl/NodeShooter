@@ -8,48 +8,46 @@ var Game = {
         });
 
         $('#btnShowLogin').on('click', function() {
-            $('.overlay').show();
+            Util.ShowHide('.overlay');
         });
 
         $('#btnLogin').on('click', function() {
             var username = $('#txtUsername').val();
             Game._username = username;
 
-            socket.emit('Request', {
-                type: 'Server',
-                method: 'SetName',
-                data: {
-                    username: Game._username
-                }
-            });
+            Game.SendRequest('Server', 'SetName', { username: Game._username });
 
             $('#info').empty();
-            $('#inventory').hide();
-            $('#buttonPanel').show();
-        });
-
-        $('#btnSave').on('click', function() {
-            socket.emit('Request', {
-                type: 'Server',
-                method: 'Save'
-            });
+            Util.ShowHide('!#inventory #buttonPanel');
         });
 
         $('#btnInventory').on('click', function() {
-            $('#inventory').show();
-            $('#buttonPanel').hide();
+            Util.ShowHide('#inventory !#buttonPanel');
         });
 
         $('#btnCloseInventory').on('click', function() {
-            $('#inventory').hide();
-            $('#buttonPanel').show();
+           Util.ShowHide('!#inventory #buttonPanel');
         });
+
+        $('#btnChat').on('click', function () {
+            $('#txtChat').val('');
+            Util.ShowHide('!.xp-box .chat-box');
+        });
+
+        $('#btnSendChat').on('click', function () {
+            Game.SendRequest('World', 'SendMessage', { message: $('#txtChat').val() });
+            Util.ShowHide('.xp-box !.chat-box');
+        });
+
+        $('#btnCancelChat').on('click', function () {
+            Util.ShowHide('.xp-box !.chat-box');
+        });
+
+        Util.ShowHide('!.chat-box');
     },
     GetPlayer: function (data) {
-        if (!$('#game').is(':visible')) {
-            $('.overlay').hide();
-            $('#game').show();
-        }
+        if (!$('#game').is(':visible'))
+            Util.ShowHide('!.overlay #game');
 
         Player = data;
 
@@ -60,14 +58,9 @@ var Game = {
             .appendTo(itemDiv)
             .attr('id', item.id)
             .on('click', function () {
-                var itemName = $(this).html();
-                socket.emit('Request', {
-                    type: 'World',
-                    method: 'DropItem',
-                    data: {
-                        id: $(this).attr('id'),
-                        name: $(this).html()
-                    }
+                Game.SendRequest('World', 'DropItem', {
+                    id: $(this).attr('id'),
+                    name: $(this).html()
                 });
             });
         });
@@ -79,8 +72,7 @@ var Game = {
         $('#hud').html('hp: ' + Player._hp);
     },
     Disconnect: function () {
-        $('.overlay').show();
-        $('#game').hide();
+        Util.ShowHide('.overlay !#game');
     },
     GetMessage: function (data) {
         var div = $('#info');
@@ -97,8 +89,14 @@ var Game = {
         div.scrollTop = div.scrollHeight;
     },
     SendInfo: function () {
-        $('#game').hide();
-        $('.overlay').show();
+        Util.ShowHide('.overlay !#game');
+    },
+    SendRequest: function (type, method, data) {
+        socket.emit('Request', {
+            type: type,
+            method: method,
+            data: data
+        });
     }
 };
 
@@ -114,13 +112,7 @@ var World = {
             $('<button class="exitButton">' + direction + '</button>')
                 .appendTo(buttonPanel)
                 .on('click', function () {
-                    socket.emit('Request', {
-                        type: 'World',
-                        method: 'Move',
-                        data: {
-                            direction: $(this).html()
-                        }
-                    });
+                    Game.SendRequest('World', 'Move', { direction: $(this).html() });
                 });
         }
 
@@ -129,13 +121,7 @@ var World = {
                 $('<div>' + player + '</div>')
                 .appendTo($('#room-text .players'))
                 .on('click', function () {
-                    /*socket.emit('Request', {
-                        type: 'World',
-                        method: 'Follow',
-                        data: {
-                            name: $(this).html()
-                        }
-                    });*/
+                    //Game.SendRequest('World', 'Follow', { name: $(this).html() });
                 });
             }
         });
@@ -146,27 +132,15 @@ var World = {
             .appendTo($('#room-text .mobs'))
             .attr('name', mob.name)
             .on('click', function () {
-                socket.emit('Request', {
-                    type: 'World',
-                    method: 'AttackMob',
-                    data: {
-                        name: $(this).attr('name')
-                    }
-                });
+                Game.SendRequest('World', 'AttackMob', { name: $(this).attr('name') }) 
             });
         });
 
         data._items.forEach(function (item) {
             $('<div>' + item + '</div>')
             .appendTo($('#room-text .items'))
-            .on('click', function () {
-                socket.emit('Request', {
-                    type: 'World',
-                    method: 'GetItem',
-                    data: {
-                        name: $(this).html()
-                    }
-                });
+            .on('click', function () { 
+                Game.SendRequest('World', 'GetItem', { name: $(this).html() }) 
             });
         });
 
@@ -174,5 +148,17 @@ var World = {
         $('#room-text .description').html(data._description);
 
         $('button').prop('disabled', false);
+    }
+};
+
+var Util = {
+    ShowHide: function (dataString) {
+        var data = dataString.split(' ');
+
+        data.forEach(function (el) {
+            var method = 'show';
+            (el[0] == '!') && (method = 'hide') && (el = el.substring(1, el.length));
+            $(el)[method]();
+        });
     }
 };

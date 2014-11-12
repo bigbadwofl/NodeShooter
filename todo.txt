@@ -1,9 +1,5 @@
 *Sometimes when following a player, the player wil appear both where it was and where it should be
-*Save and Load Player should serialze everything, not just inventory (xp, level, maxXP)
-*Different mobs = different xp
-*Mob levels
-*Mob damage
-*Death
+*Save and Load Player should serialze everything, not just inventory (xp, level, maxXP, current room)
 *Equipping
 *Equipped items should contribute
 *Bigger city
@@ -15,8 +11,30 @@
 *Zone Editor
 *Player inv/rooms/mobs should only contain item IDs
 *Selective SyncPlayer (for smaller packages)
+*Selective SyncRoom
 *Vehicles
 *Trading
 *All players that helped kill a mob should get xp? Possibly keep track of how many dmg was done and split it that way
+*Mob prefixes (the janitor, Krzystov)
+*Loading and Saving names to GAE shouldn't be case sensitive
+*Factions and Rep
+*Alignment (with item requirements)
+*Hunger and thirst
+*Bank
+*Post Office
+*Abilities/Spells (+ training)
+*Clans
+*Consumables (Potions/Scrolls/Rods/Staves)
+*Crafting
+*Events
+*Hostile mobs
+*Context menu when clicking on player (follow, inspect, attack, whisper)
+*Sort out mob chance to move/handler
+
+DONE
 *Chat box
-*Mob prefixes (the janitor, Krzystof)
+*Death
+*Only certain mobs roam
+*Different mobs = different xp
+*Mob levels
+*Mob damage

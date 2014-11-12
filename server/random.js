@@ -18,6 +18,9 @@ var Random = {
 		}
 
 		return this.El(temp);
+	},
+	Roll: function (chance) {
+		return (this.Int(0, 100) < chance);
 	}
 };
 

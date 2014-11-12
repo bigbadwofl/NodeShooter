@@ -75,11 +75,7 @@ var Server = {
 		
 		delete this._players[socket.id];
 
-		socket.emit('Response', {
-			type: 'Game',
-			method: 'Disconnect',
-			data: { }
-		});
+		this.SendResponse(socket, 'Game', 'Disconnect');
 	},
 	SendMessage: function (socket, msg, type) {
 		var data = {
@@ -87,11 +83,7 @@ var Server = {
 			type: type
 		};
 
-		socket.emit('Response', {
-			type: 'Game',
-			method: 'GetMessage',
-			data: data
-		});
+		this.SendResponse(socket, 'Game', 'GetMessage', data);
 	},
 	BroadcastMessage: function (template, data, player, room) {
 		if (player != null) {
@@ -111,17 +103,20 @@ var Server = {
 			}
 		}
 	},
+	SendResponse: function (socket, type, method, data) {
+		socket.emit('Response', {
+			type: type,
+			method: method,
+			data: data
+		});
+	},
 	SyncPlayer: function (player) {
 		var data = Serializer.Serialize('PLAYER', player);
 		data._items = data._items.slice(0);
 
 		data._xp = player._xp / player._xpMax;
 
-		player.socket.emit('Response', {
-			type: 'Game',
-			method: 'GetPlayer',
-			data: data
-		});
+		this.SendResponse(player.socket, 'Game', 'GetPlayer', data);
 	}
 };
 

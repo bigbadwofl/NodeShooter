@@ -1,7 +1,7 @@
 {
-	"name": "NodeShooter",
+	"name": "Node.JS",
 	"version": "0.0.1",
-	"description": "Arena Shooter",
+	"description": "Node.JS",
 	"dependencies": {
 		"express": "4.3.1",
 		"socket.io": "1.2.0",

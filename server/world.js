@@ -158,10 +158,8 @@ var World = {
 	},
 	SendMessage: function (socket, data) {
 		var fromPlayer = Server.GetPlayer(socket.id);
-		var toPlayer = Server.GetPlayerName(data.data.name);
 
-		Server.BroadcastMessage('DoSay', { message: data.data.message }, fromPlayer, null);
-		Server.BroadcastMessage('HearSay', { name: fromPlayer.username, message: data.data.message }, toPlayer, null);
+		Server.BroadcastMessage('DoSay', { name: fromPlayer.username, message: data.data.message }, fromPlayer, fromPlayer.room);
 	},
 	SyncRoom: function (room) {
 		var roomData = Serializer.Serialize('ROOM', room);
@@ -181,12 +179,7 @@ var World = {
 			var player = room._players[i];
 			var socket = Server.GetPlayer(player).socket;
 
-			socket.emit('Response', {
-				id: player,
-				type: 'World',
-				method: 'GetRoom',
-				data: roomData
-			});
+			Server.SendResponse(socket, 'World', 'GetRoom', roomData);
 		}
 	}
 };

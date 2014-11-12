@@ -2,7 +2,7 @@ function Player() {
 	this._items = [];
 	this.followers = [];
 	this._fighting = false;
-	this._hp = 30;
+	this._hp = 10;
 	this._xp = 0;
 	this._xpMax = 10;
 	this._level = 1;
@@ -25,19 +25,48 @@ function Player() {
 		Server.BroadcastMessage('HearFollow', { name: this.username }, followPlayer, null);
 	};
 
-	this.GetXP = function () {
-		this._xp += 4;
+	this.GetXP = function (mob) {
+		this._xp += mob.lvl;
 
-		Server.BroadcastMessage('GetXP', { }, this, null);
+		Server.BroadcastMessage('GetXP', { amount: mob.lvl }, this, null);
 
 		if (this._xp >= this._xpMax) {
 			this._xp -= this._xpMax;
 			this._xpMax += this._xpMax;
 			this._level++;
+			this._hp = 9 + this._level;
 			Server.BroadcastMessage('AdvanceLevel', { name: this.username }, this, this.room);
 		}
 
 		Server.SyncPlayer(this);
+	};
+
+	this.TakeDamage = function (mob) {
+		this._hp -= mob.dmg;
+
+		Server.BroadcastMessage('MobDoHit', { name: this.username, mob: mob.name, p: mob._prefix }, this, this.room);
+
+		if (this._hp <= 0) {
+			this._fighting = false;
+			for (var i = 0; i < World._fights.length; i++) {
+				var fight = World._fights[i];
+
+				if (fight._player == this) {
+					fight._mob._fighting = false;
+					World._fights.splice(i, 1);
+					i--;
+				}
+			}
+
+			this._fighting = false;
+
+			this._xp -= this._level;
+			(this._xp < 0) && (this._xp = 0);
+
+			Server.BroadcastMessage('Died', { name: this.username }, this, this.room);
+			World.GetRoom(this.socket, { data: { id: 'r3' } });
+			this._hp = 10;
+		}
 	};
 
 	this.Unfollow = function() {

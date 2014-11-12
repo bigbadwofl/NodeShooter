@@ -38,10 +38,7 @@ var Messages = {
 		},
 		DoSay: {
 			player: 'you said: $message',
-			type: 'error'
-		},
-		HearSay: {
-			player: '$name said: $message',
+			room: '$name said: $message',
 			type: 'error'
 		},
 		DoFollow: {
@@ -65,54 +62,62 @@ var Messages = {
 			type: 'info'
 		},
 		MobLeft: {
-			room: 'the $name left',
+			room: '$p$name left',
 			type: 'info'
 		},
 		MobArrived: {
-			room: 'the $name arrived',
+			room: '$p$name arrived',
 			type: 'info'
 		},
 		MobKilled: {
-			player: 'you killed the $mob',
-			room: '$name killed the $mob',
+			player: 'you killed $p$mob',
+			room: '$name killed $p$mob',
 			type: 'info'
 		},
 		MobLoot: {
-			room: 'the $name dropped something on death',
+			room: '$p$name dropped something on death',
 			type: 'error'
 		},
 		MobGetHit: {
-			player: 'you hit the $mob',
-			room: '$name hit the $mob',
+			player: 'you hit $p$mob',
+			room: '$name hit $p$mob',
 			type: 'combat'
 		},
 		MobGetMissed: {
-			player: 'you missed the $mob',
-			room: '$name missed the $mob',
+			player: 'you missed $p$mob',
+			room: '$name missed $p$mob',
 			type: 'combat'
 		},
 		MobDoHit: {
-			player: 'the $mob hit you',
-			room: 'the $mob hit $name',
+			player: '$p$mob hit you',
+			room: '$p$mob hit $name',
 			type: 'combat'
 		},
 		MobDoMissed: {
-			player: 'the $mob missed you',
-			room: 'the $mob missed $name',
+			player: '$p$mob missed you',
+			room: '$p$mob missed $name',
 			type: 'combat'
 		},
 		JanitorClean: {
-			room: 'the $name picked up some trash',
+			room: '$p$name picked up some trash',
+			type: 'info'
+		},
+		DogPee: {
+			room: 'the $name peed on $p$target',
 			type: 'info'
 		},
 		GetXP: {
-			player: 'you gained 1 xp',
+			player: 'you gained $amount xp',
 			type: 'error'
-		}
-		,
+		},
 		AdvanceLevel: {
 			player: 'you advanced to the next level',
 			room: '$name advanced to the next level',
+			type: 'error'
+		},
+		Died: {
+			player: 'you died and lost some xp',
+			room: '$name died',
 			type: 'error'
 		}
 	}
