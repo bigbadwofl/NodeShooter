@@ -26,9 +26,6 @@ var Game = {
             $('#info').empty();
             $('#inventory').hide();
             $('#buttonPanel').show();
-
-            $('.overlay').hide();
-            $('#game').show();
         });
 
         $('#btnSave').on('click', function() {
@@ -49,6 +46,11 @@ var Game = {
         });
     },
     GetPlayer: function (data) {
+        if (!$('#game').is(':visible')) {
+            $('.overlay').hide();
+            $('#game').show();
+        }
+
         Player = data;
 
         var itemDiv = $('#inventory-contents');

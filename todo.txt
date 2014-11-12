@@ -1,0 +1,21 @@
+*Sometimes when following a player, the player wil appear both where it was and where it should be
+*Save and Load Player should serialze everything, not just inventory (xp, level, maxXP)
+*Different mobs = different xp
+*Mob levels
+*Mob damage
+*Death
+*Equipping
+*Equipped items should contribute
+*Bigger city
+*2 Info panels: one for only info pertaining to you and another for all info
+*Gold
+*Shops
+*Generic Mob Utility class (Janitor clean...)
+*Easier item/mob clicking on mobile
+*Zone Editor
+*Player inv/rooms/mobs should only contain item IDs
+*Selective SyncPlayer (for smaller packages)
+*Vehicles
+*Trading
+*All players that helped kill a mob should get xp? Possibly keep track of how many dmg was done and split it that way
+*Chat box

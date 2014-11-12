@@ -39,8 +39,6 @@ var Server = {
 			World.SyncRoom(player.room);
 		else
 			World.GetRoom(socket, {	data: {	id: 'r0' } });
-
-		Server.SyncPlayer(player);
 	},
 	Save: function (socket) {
 		var player = this._players[socket.id];

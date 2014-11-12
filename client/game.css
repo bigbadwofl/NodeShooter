@@ -159,15 +159,31 @@ input {
 
 #inventory-heading {
 	color: hsla(279, 100%, 76%, 1);
+	display: block;
+	height: 10%;
 }
 
 #inventory-contents {
 	color: white;
+	height: 80%;
+	overflow-y: auto;
 }
 
 #inventory-contents span {
 	width: 100%;
 	display: block;
+}
+
+#inventory-contents span:nth-child(2n) {
+	background-color: hsla(0, 0%, 100%, 0.05);
+}
+
+#inventory-contents span:nth-child(2n + 1) {
+	background-color: hsla(0, 0%, 100%, 0.15);
+}
+
+#inventory button {
+	height: 10%;
 }
 
 #hud {
