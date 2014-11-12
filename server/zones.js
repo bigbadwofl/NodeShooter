@@ -46,11 +46,11 @@ var Zones = {
 		Mobs: {
 			m0: {
 				name: 'City Guard',
-				hp: 10
+				hp: 5
 			},
 			m1: {
 				name: 'Filthy Peasant',
-				hp: 4
+				hp: 2
 			},
 			m2: {
 				name: 'Mangy Dog',
@@ -58,12 +58,12 @@ var Zones = {
 			},
 			m3: {
 				name: 'Janitor',
-				hp: 20,
+				hp: 3,
 				handler: 'Clean'
 			},
 			m4: {
 				name: 'Krzystov - Master Janitor',
-				hp: 100
+				hp: 10
 			}
 		}
 	}

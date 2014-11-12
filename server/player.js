@@ -26,12 +26,12 @@ function Player() {
 	};
 
 	this.GetXP = function () {
-		this._xp++;
+		this._xp += 4;
 
 		Server.BroadcastMessage('GetXP', { }, this, null);
 
-		if (this._xp == this._xpMax) {
-			this._xp = 0;
+		if (this._xp >= this._xpMax) {
+			this._xp -= this._xpMax;
 			this._xpMax += this._xpMax;
 			this._level++;
 			Server.BroadcastMessage('AdvanceLevel', { name: this.username }, this, this.room);

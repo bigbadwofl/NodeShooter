@@ -65,6 +65,8 @@ input {
 	top: 0%;
 	text-align: center;
 	font-size: 24px;
+	top: 0px;
+	position: absolute;
 }
 
 #room-text {
@@ -107,7 +109,7 @@ input {
 
 #info {
 	width: 100%;
-	height: 35%;
+	height: 38%;
 	border-top: 4px solid hsl(0, 0%, 90%);
 	color: hsla(335, 100%, 76%, 1);
 	font-size: 28px;
@@ -171,7 +173,7 @@ input {
 #hud {
 	padding-left: 10px;
 	color: red;
-	height: 10%;
+	height: 7%;
 }
 
 #buttonPanel {
