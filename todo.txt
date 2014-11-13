@@ -1,5 +1,4 @@
 *Sometimes when following a player, the player wil appear both where it was and where it should be
-*Save and Load Player should serialze everything, not just inventory (xp, level, maxXP, current room)
 *Equipping
 *Equipped items should contribute
 *Bigger city
@@ -24,7 +23,6 @@
 *Consumables (Potions/Scrolls/Rods/Staves)
 *Crafting
 *Events
-*Hostile mobs
 *Context menu when clicking on player (follow, inspect, attack, whisper)
 *Context menu for mobs
 *Context menu for items
@@ -40,3 +38,5 @@ DONE
 *Mob prefixes (the janitor, Krzystov)
 *Shops
 *Gold
+*Save and Load Player should serialze everything, not just inventory (xp, level, maxXP, current room)
+*Hostile mobs

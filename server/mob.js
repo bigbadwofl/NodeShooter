@@ -10,7 +10,10 @@ function Mob(id, data, items) {
 	this.items = items;
 	this._fighting = false;
 	this._handler = data.handler;
-	this._roam = data.roam || false;
+
+	this._roam = !!data.roam;
+	this._hostile = !!data.hostile;
+
 	this._prefix = data.prefix;
 	(this._prefix == null) && (this._prefix = 'the ');
 	this._shop = data.shop && (new Shop(data.shop, this));

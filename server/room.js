@@ -2,6 +2,9 @@ var Random = require('./random.js');
 var Mob = require('./mob.js');
 
 function Room(data) {
+	data.items || (data.items = []);
+	data.mobs || (data.mobs = []);
+
 	this._id = data.id;
 	this._name = data.name;
 	this._description = data.description;
@@ -35,7 +38,7 @@ function Room(data) {
 
 	for (var i = 0; i < data.mobs.length; i++) {
 		var mobData = Zones.City.Mobs[data.mobs[i].id];
-		var mobItemData = data.mobs[i].items;
+		var mobItemData = data.mobs[i].items || [];
 		mobItemData = mobItemData.slice(0);
 		for (var j = 0; j < mobItemData.length; j++) {
 			var tempItem = Zones.City.Items[mobItemData[j]];
@@ -78,7 +81,7 @@ function Room(data) {
 
 			changed = true;
 
-			var mobItemData = data.mobs[i].items;
+			var mobItemData = data.mobs[i].items || [];
 
 			mobItemData = mobItemData.slice(0);
 			for (var j = 0; j < mobItemData.length; j++) {
@@ -141,6 +144,19 @@ function Room(data) {
 
 	this.AddPlayer = function(id, followers) {
 		this._players.push(id);
+
+		//Hostile Mobs
+		var player = Server.GetPlayer(id);
+		for (var i = 0; i < this._mobs.length; i++) {
+			var mob = this._mobs[i];
+			if (!mob._hostile)
+				continue;
+
+			World._fights.push({
+				_player: player,
+				_mob: mob
+			});
+		}
 
 		if (followers == null)
 			return;

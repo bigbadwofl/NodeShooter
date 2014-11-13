@@ -8,7 +8,6 @@ var Zones = {
 				e: 'r1',
 				w: 'r2'
 			},
-			items: [],
 			mobs: [{
 				id: 'm0',
 				items: ['i0']
@@ -18,15 +17,14 @@ var Zones = {
 			name: 'East Market Street',
 			description: '',
 			exits: {
-				w: 'r0'
+				w: 'r0',
+				s: 'tavern'
 			},
-			items: [],
 			mobs: [{
 				id: 'm3',
 				items: ['i3']
 			}, {
-				id: 'm1',
-				items: []
+				id: 'm1'
 			}]
 		}, {
 			id: 'r2',
@@ -35,10 +33,8 @@ var Zones = {
 			exits: {
 				e: 'r0'
 			},
-			items: [],
 			mobs: [{
-				id: 'm2',
-				items: []
+				id: 'm2'
 			}, {
 				id: 'm4',
 				items: ['i1', 'i2', 'i4']
@@ -49,9 +45,17 @@ var Zones = {
 			description: '',
 			exits: {
 				s: 'r1'
+			}
+		}, {
+			id: 'tavern',
+			name: 'Noisy Tavern',
+			description: '',
+			exits: {
+				n: 'r1'
 			},
-			items: [],
-			mobs: []
+			mobs: [{
+				id: 'm5'
+			}]
 		}],
 		Items: {
 			i0: {
@@ -104,6 +108,12 @@ var Zones = {
 				lvl: 10,
 				prefix: '',
 				shop: 's0'
+			},
+			m5: {
+				name: 'Angry Warrior',
+				lvl: 1,
+				gold: 1,
+				hostile: true
 			}
 		},
 		Shops: {

@@ -3,3 +3,9 @@ var Editor = {
 		
 	}
 };
+
+var Models = {
+	Mob: {
+		
+	}
+};
