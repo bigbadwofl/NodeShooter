@@ -97,7 +97,7 @@ function Room(data) {
 		for (var i = 0; i < this._items.length; i++) {
 			if (this._items[i].name == name) {
 				if (player.items == null)
-					player._items.push(this._items[i]);
+					player.GetItem(this._items[i]);
 				else
 					player.items.push(this._items[i]);
 

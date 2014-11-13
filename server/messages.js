@@ -123,6 +123,10 @@ var Messages = {
 		BoughtItem: {
 			player: 'you bought a $name',
 			type: 'error'
+		},
+		FundsItem: {
+			player: "you're too poor to buy that item",
+			type: 'error'
 		}
 	}
 };

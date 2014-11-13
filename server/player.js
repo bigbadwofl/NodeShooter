@@ -3,9 +3,15 @@ function Player() {
 	this.followers = [];
 	this._fighting = false;
 	this._hp = 10;
+	this._hpMax = 10;
 	this._xp = 0;
 	this._xpMax = 10;
 	this._level = 1;
+	this._gold = 0;
+
+	this.ResetItems = function () {
+		this._items = [ ];
+	};
 
 	this.Follow = function (playerName) {
 		var oldFollower = this._following;
@@ -25,6 +31,16 @@ function Player() {
 		Server.BroadcastMessage('HearFollow', { name: this.username }, followPlayer, null);
 	};
 
+	this.GetItem = function (item) {
+		if (item.id == 'gold') {
+			this._gold += item.price;
+
+			return;
+		}
+
+		this._items.push(item);
+	};
+
 	this.GetXP = function (mob) {
 		this._xp += mob.lvl;
 
@@ -34,7 +50,8 @@ function Player() {
 			this._xp -= this._xpMax;
 			this._xpMax += this._xpMax;
 			this._level++;
-			this._hp = 9 + this._level;
+			this._hpMax = 9 + this._level;
+			this._hp = this._hpMax;
 			Server.BroadcastMessage('AdvanceLevel', { name: this.username }, this, this.room);
 		}
 
@@ -45,11 +62,21 @@ function Player() {
 		this._xp -= this._level;
 		(this._xp < 0) && (this._xp = 0);
 
-		this._hp = 10;
+		this.RegenHP(true);
 
 		Server.BroadcastMessage('Died', { name: this.username }, this, this.room);
 		World.GetRoom(this.socket, { data: { id: 'r3' } });
 		Server.SyncPlayer(this);
+	};
+
+	this.RegenHP = function (max) {
+		if (max)
+			this._hp = this._hpMax;
+		else {
+			this._hp++;
+			if (this._hp > this._hpMax)
+				this._hp = this._hpMax;
+		}
 	};
 
 	this.TakeDamage = function (mob) {

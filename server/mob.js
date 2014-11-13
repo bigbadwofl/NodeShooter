@@ -14,6 +14,7 @@ function Mob(id, data, items) {
 	this._prefix = data.prefix;
 	(this._prefix == null) && (this._prefix = 'the ');
 	this._shop = data.shop && (new Shop(data.shop, this));
+	this._gold = data.gold || 0;
 
 	this.Move = function(room) {
 	if ((!this._roam) || (this._fighting) || (Random.Int(0, 10) > 0)) {
@@ -51,6 +52,13 @@ function Mob(id, data, items) {
 			Server.BroadcastMessage('MobKilled', data, player, room);
 			if (this.items.length > 0)
 				Server.BroadcastMessage('MobLoot', { name: this.name, p: this._prefix }, null, room);
+
+			if (this._gold > 0) {
+				room.AddItem('gold', {
+					name: this._gold + ' coins',
+					price: this._gold
+				});
+			}
 
 			for (var j = 0; j < this.items.length; j++) {
 				room.AddItem(this.items[j].id, this.items[j]);

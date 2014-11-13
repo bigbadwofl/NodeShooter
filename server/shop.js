@@ -15,7 +15,7 @@ function Shop(id, mob) {
 			list.push({
 				id: item.id,
 				name: item.name,
-				price: item.price * this._priceScale
+				price: item.value * this._priceScale
 			});
 		}
 
@@ -32,6 +32,11 @@ function Shop(id, mob) {
 		var item = Util.Find(this, this._items, function (i) {
 			return (i.id == item);
 		});
+
+		if (player._gold < item.value * this._priceScale) {
+			Server.BroadcastMessage('FundsItem', { }, player, null);
+			return;
+		}
 
 		player._items.push(item);
 		Server.BroadcastMessage('BoughtItem', { name: item.name }, player, null);

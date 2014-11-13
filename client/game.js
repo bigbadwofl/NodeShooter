@@ -2,6 +2,25 @@ var socket = io();
 
 var Game = {
     _username: '',
+    BuildInventory: function () {
+        var itemDiv = $('#inventory-contents');
+        itemDiv.empty();
+
+        $('<span>' + Player._gold + ' coins</span>')
+        .appendTo(itemDiv);
+
+        Player._items.forEach(function (item) {
+            $('<span>' + item.name + '</span>')
+            .appendTo(itemDiv)
+            .attr('id', item.id)
+            .on('click', function () {
+                Game.SendRequest('World', 'DropItem', {
+                    id: $(this).attr('id'),
+                    name: $(this).html()
+                });
+            });
+        });
+    },
     Init: function () {
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
@@ -22,6 +41,8 @@ var Game = {
         });
 
         $('#btnInventory').on('click', function() {
+            Game.BuildInventory();
+
             $('#inventory-heading').html('Inventory');
             Util.ShowHide('#inventory !#buttonPanel');
         });
@@ -52,19 +73,8 @@ var Game = {
 
         Player = data;
 
-        var itemDiv = $('#inventory-contents');
-        itemDiv.empty();
-        Player._items.forEach(function (item) {
-            $('<span>' + item.name + '</span>')
-            .appendTo(itemDiv)
-            .attr('id', item.id)
-            .on('click', function () {
-                Game.SendRequest('World', 'DropItem', {
-                    id: $(this).attr('id'),
-                    name: $(this).html()
-                });
-            });
-        });
+        if (($('#inventory').is(':visible')) && ($('#inventory-heading').html() == 'Inventory'))
+            this.BuildInventory();
 
         //XP Bar
         $('.xp').css('width', ~~(data._xp * 100) + '%');
@@ -113,11 +123,11 @@ var Shop = {
         contentDiv.empty();
 
         data.items.forEach(function (item) {
-            $('<span>' + item.name + '</span>')
+            $('<span>' + item.name + ' (' + item.price + ')</span>')
             .appendTo(contentDiv)
             .attr('id', item.id)
+            .attr('price', item.price)
             .on('click', function () {
-                console.log(this._sho)
                 Game.SendRequest('World', 'BuyItem', { mob: Shop._shopID, item: $(this).attr('id') });
             });
         });

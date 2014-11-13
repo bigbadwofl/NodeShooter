@@ -50,7 +50,7 @@ var Server = {
 
 		GAE.Get('player', player.username, function (result) {
 			if (result == null)
-				player._items = [];
+				player.ResetItems();
 			else
 				player._items = JSON.parse(result);
 

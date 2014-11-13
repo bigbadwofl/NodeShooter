@@ -60,7 +60,7 @@ var Zones = {
 			},
 			i1: {
 				name: 'Mop of Power',
-				value: 20
+				value: 10
 			},
 			i2: {
 				name: 'Stinky Potion',
@@ -79,10 +79,12 @@ var Zones = {
 			m0: {
 				name: 'City Guard',
 				lvl: 5,
+				gold: 20
 			},
 			m1: {
 				name: 'Filthy Peasant',
-				lvl: 2
+				lvl: 2,
+				gold: 1
 			},
 			m2: {
 				name: 'Mangy Dog',
@@ -94,7 +96,8 @@ var Zones = {
 				name: 'Janitor',
 				lvl: 3,
 				handler: 'Clean',
-				roam: true
+				roam: true,
+				gold: 3
 			},
 			m4: {
 				name: 'Krzystov (Shopkeeper)',
@@ -106,7 +109,7 @@ var Zones = {
 		Shops: {
 			s0: {
 				name: "Krzystov's Shop",
-				priceScale: 10
+				priceScale: 1
 			}
 		}
 	}
