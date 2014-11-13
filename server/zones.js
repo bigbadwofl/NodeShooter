@@ -1,54 +1,78 @@
 var Zones = {
 	City: {
-		Rooms: [
-			{
-				id: 'r0',
-				name: 'Market Square',
-				description: '',
-				exits: { e: 'r1', w: 'r2' },
-				items: [ ],
-				mobs: [ { id: 'm0', items: [ 'i0' ] } ]
+		Rooms: [{
+			id: 'r0',
+			name: 'Market Square',
+			description: '',
+			exits: {
+				e: 'r1',
+				w: 'r2'
 			},
-			{
-				id: 'r1',
-				name: 'East Market Street',
-				description: '',
-				exits: { w: 'r0' },
-				items: [ ],
-				mobs: [ { id: 'm3', items: [ 'i3' ] }, { id: 'm1', items: [ 'i1' ] } ]
+			items: [],
+			mobs: [{
+				id: 'm0',
+				items: ['i0']
+			}]
+		}, {
+			id: 'r1',
+			name: 'East Market Street',
+			description: '',
+			exits: {
+				w: 'r0'
 			},
-			{
-				id: 'r2',
-				name: 'West Market Street',
-				description: '',
-				exits: { e: 'r0' },
-				items: [ ],
-				mobs: [ { id: 'm2', items: [ 'i2' ] }, { id: 'm4', items: [ 'i4' ] } ]
+			items: [],
+			mobs: [{
+				id: 'm3',
+				items: ['i3']
+			}, {
+				id: 'm1',
+				items: []
+			}]
+		}, {
+			id: 'r2',
+			name: 'West Market Street',
+			description: '',
+			exits: {
+				e: 'r0'
 			},
-			{
-				id: 'r3',
-				name: 'Temple',
-				description: '',
-				exits: { s: 'r1' },
-				items: [ ],
-				mobs: [ ]
-			}
-		],
+			items: [],
+			mobs: [{
+				id: 'm2',
+				items: []
+			}, {
+				id: 'm4',
+				items: ['i1', 'i2', 'i4']
+			}]
+		}, {
+			id: 'r3',
+			name: 'Temple',
+			description: '',
+			exits: {
+				s: 'r1'
+			},
+			items: [],
+			mobs: []
+		}],
 		Items: {
 			i0: {
-				name: 'Sword'
+				name: 'Sword',
+				value: 10
 			},
 			i1: {
-				name: 'Gauntlets'
+				name: 'Mop of Power',
+				value: 20
 			},
 			i2: {
-				name: 'Potion'
+				name: 'Stinky Potion',
+				value: 5
 			},
 			i3: {
-				name: 'Broom of Power'
+				name: 'Broom',
+				value: 1
 			},
 			i4: {
-				name: 'Sack of the Absolute'
+				name: 'Sack of the Absolute',
+				value: 100
 			}
 		},
 		Mobs: {
@@ -73,9 +97,16 @@ var Zones = {
 				roam: true
 			},
 			m4: {
-				name: 'Krzystov (Master Janitor)',
+				name: 'Krzystov (Shopkeeper)',
 				lvl: 10,
-				prefix: ''
+				prefix: '',
+				shop: 's0'
+			}
+		},
+		Shops: {
+			s0: {
+				name: "Krzystov's Shop",
+				priceScale: 10
 			}
 		}
 	}

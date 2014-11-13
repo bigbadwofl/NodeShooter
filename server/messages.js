@@ -119,6 +119,10 @@ var Messages = {
 			player: 'you died and lost some xp',
 			room: '$name died',
 			type: 'error'
+		},
+		BoughtItem: {
+			player: 'you bought a $name',
+			type: 'error'
 		}
 	}
 };

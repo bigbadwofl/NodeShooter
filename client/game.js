@@ -4,6 +4,7 @@ var Game = {
     _username: '',
     Init: function () {
         socket.on('Response', function (data) {
+            console.log(data);
             window[data.type][data.method](data.data);
         });
 
@@ -22,6 +23,7 @@ var Game = {
         });
 
         $('#btnInventory').on('click', function() {
+            $('#inventory-heading').html('Inventory');
             Util.ShowHide('#inventory !#buttonPanel');
         });
 
@@ -96,6 +98,29 @@ var Game = {
             type: type,
             method: method,
             data: data
+        });
+    }
+};
+
+var Shop = {
+    _shopID: -1,
+    ListItems: function (data) {
+        this._shopID = data.id;
+
+        Util.ShowHide('#inventory !#buttonPanel');
+
+        $('#inventory-heading').html(data.name);
+        var contentDiv = $('#inventory-contents');
+        contentDiv.empty();
+
+        data.items.forEach(function (item) {
+            $('<span>' + item.name + '</span>')
+            .appendTo(contentDiv)
+            .attr('id', item.id)
+            .on('click', function () {
+                console.log(this._sho)
+                Game.SendRequest('World', 'BuyItem', { mob: Shop._shopID, item: $(this).attr('id') });
+            });
         });
     }
 };

@@ -23,7 +23,7 @@ function Room(data) {
 	};
 
 	this.AddItem = function(id, itemData) {
-		var item = { id: id, name: itemData.name };
+		var item = { id: id, name: itemData.name, price: itemData.price };
 		this._items.push(item);
 	};
 

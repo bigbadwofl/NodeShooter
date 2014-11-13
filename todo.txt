@@ -14,8 +14,7 @@
 *Selective SyncRoom
 *Vehicles
 *Trading
-*All players that helped kill a mob should get xp? Possibly keep track of how many dmg was done and split it that way
-*Mob prefixes (the janitor, Krzystov)
+*All players that helped kill a mob should get xp? Possibly keep track of how much dmg was done and split it that way
 *Loading and Saving names to GAE shouldn't be case sensitive
 *Factions and Rep
 *Alignment (with item requirements)
@@ -29,12 +28,15 @@
 *Events
 *Hostile mobs
 *Context menu when clicking on player (follow, inspect, attack, whisper)
+*Context menu for mobs
+*Context menu for items
 *Sort out mob chance to move/handler
+*Rewrite fighting interval
 
 DONE
 *Chat box
 *Death
 *Only certain mobs roam
-*Different mobs = different xp
 *Mob levels
-*Mob damage
+*Mob HP/DMG/XP calculated from level
+*Mob prefixes (the janitor, Krzystov)

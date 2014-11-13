@@ -131,15 +131,26 @@ var World = {
 
 		Server.SyncPlayer(player);
 	},
+	BuyItem: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		console.log(data);
+		var mob = player.room.GetMob(data.data.mob);
+		mob._shop.BuyItem(socket, data.data.item);
+	},
 	AttackMob: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
+
+		var mob = player.room.GetMob(data.data.name);
+		if (mob._shop != null) {
+			mob._shop.ListItems(socket);
+			return;
+		}
 
 		if (player._fighting) {
 			Server.BroadcastMessage('AlreadyFighting', {}, player, null);
 			return;
 		}
 
-		var mob = player.room.GetMob(data.data.name);
 		if (mob == null) {
 			Server.BroadcastMessage('NotHere', {}, player, null);
 			return;

@@ -1,4 +1,5 @@
 var Random = require('./random.js');
+var Shop = require('./shop.js');
 
 function Mob(id, data, items) {
 	this.id = id;
@@ -12,6 +13,7 @@ function Mob(id, data, items) {
 	this._roam = data.roam || false;
 	this._prefix = data.prefix;
 	(this._prefix == null) && (this._prefix = 'the ');
+	this._shop = data.shop && (new Shop(data.shop, this));
 
 	this.Move = function(room) {
 	if ((!this._roam) || (this._fighting) || (Random.Int(0, 10) > 0)) {
