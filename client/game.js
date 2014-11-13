@@ -4,7 +4,6 @@ var Game = {
     _username: '',
     Init: function () {
         socket.on('Response', function (data) {
-            console.log(data);
             window[data.type][data.method](data.data);
         });
 

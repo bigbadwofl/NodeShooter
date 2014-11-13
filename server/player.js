@@ -41,32 +41,21 @@ function Player() {
 		Server.SyncPlayer(this);
 	};
 
+	this.Die = function () {
+		this._xp -= this._level;
+		(this._xp < 0) && (this._xp = 0);
+
+		this._hp = 10;
+
+		Server.BroadcastMessage('Died', { name: this.username }, this, this.room);
+		World.GetRoom(this.socket, { data: { id: 'r3' } });
+		Server.SyncPlayer(this);
+	};
+
 	this.TakeDamage = function (mob) {
 		this._hp -= mob.dmg;
 
 		Server.BroadcastMessage('MobDoHit', { name: this.username, mob: mob.name, p: mob._prefix }, this, this.room);
-
-		if (this._hp <= 0) {
-			this._fighting = false;
-			for (var i = 0; i < World._fights.length; i++) {
-				var fight = World._fights[i];
-
-				if (fight._player == this) {
-					fight._mob._fighting = false;
-					World._fights.splice(i, 1);
-					i--;
-				}
-			}
-
-			this._fighting = false;
-
-			this._xp -= this._level;
-			(this._xp < 0) && (this._xp = 0);
-
-			Server.BroadcastMessage('Died', { name: this.username }, this, this.room);
-			World.GetRoom(this.socket, { data: { id: 'r3' } });
-			this._hp = 10;
-		}
 	};
 
 	this.Unfollow = function() {

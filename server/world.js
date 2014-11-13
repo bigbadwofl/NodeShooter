@@ -61,6 +61,14 @@ var World = {
 			
 			World.SyncRoom(fight._player.room);
 
+			if (fight._player._hp <= 0) {
+				fight._player.Die();
+				fight._player._fighting = false;
+				this._fights.splice(i, 1);
+				i--;
+				continue;
+			}
+
 			if (killed) {
 				this._fights.splice(i, 1);
 				i--;
@@ -133,7 +141,6 @@ var World = {
 	},
 	BuyItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
-		console.log(data);
 		var mob = player.room.GetMob(data.data.mob);
 		mob._shop.BuyItem(socket, data.data.item);
 	},

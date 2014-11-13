@@ -5,7 +5,6 @@
 *Bigger city
 *2 Info panels: one for only info pertaining to you and another for all info
 *Gold
-*Shops
 *Generic Mob Utility class (Janitor clean...)
 *Easier item/mob clicking on mobile
 *Zone Editor
@@ -40,3 +39,4 @@ DONE
 *Mob levels
 *Mob HP/DMG/XP calculated from level
 *Mob prefixes (the janitor, Krzystov)
+*Shops
