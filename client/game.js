@@ -131,6 +131,9 @@ var Shop = {
                 Game.SendRequest('World', 'BuyItem', { mob: Shop._shopID, item: $(this).attr('id') });
             });
         });
+
+         $('<span id="shopGold">' + Player._gold + ' coins</span>')
+        .appendTo(contentDiv);
     }
 };
 

@@ -1,3 +1,5 @@
+var jsonpack = require('jsonpack/main');
+
 function Player() {
 	this._items = [];
 	this.followers = [];
@@ -97,6 +99,51 @@ function Player() {
 
 		Server.BroadcastMessage('DoUnfollow', { name: followPlayer.username }, this, null);
 		Server.BroadcastMessage('HearUnfollow', { name: this.username }, followPlayer, null);
+	};
+
+	this.Save = function () {
+		var data = {
+			level: this._level,
+			xp: this._xp,
+			gold: this._gold,
+			items: this._items,
+			room: this.room._id
+		};
+
+		GAE.Set('player', this.username, jsonpack.pack(data));
+	};
+
+	this.Load = function () {
+		var player = this;
+
+		GAE.Get('player', this.username, function (result) {
+			var room = 'r0';
+
+			if (result == null)
+				player.ResetItems();
+			else {
+				var data = jsonpack.unpack(result);
+
+				player._items = data.items;
+				player._level = data.level;
+				player._gold = data.gold;
+				player._xp = data.xp;
+
+				player._xpMax = player._level * 10;
+				player._hpMax = 9 + player._level;
+				player._hp = player._hpMax;
+
+				if (data.room)
+					room = data.room;
+			}
+
+			if (player.room != null)
+				World.SyncRoom(player.room);
+			else
+				World.GetRoom(player.socket, {	data: {	id: room } });
+
+			Server.SyncPlayer(player);
+		});
 	};
 }
 

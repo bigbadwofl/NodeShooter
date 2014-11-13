@@ -40,6 +40,7 @@ function Shop(id, mob) {
 
 		player._items.push(item);
 		Server.BroadcastMessage('BoughtItem', { name: item.name }, player, null);
+		Server.SyncPlayer(player);
 	}
 }
 
