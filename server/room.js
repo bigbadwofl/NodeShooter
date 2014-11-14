@@ -25,28 +25,18 @@ function Room(data) {
 		this._mobs.push(mob);
 	};
 
-	this.AddItem = function(id, itemData) {
-		var item = { id: id, name: itemData.name, price: itemData.price };
-		this._items.push(item);
+	this.BuildItem = function (data, id) {
+		this._items.push({ id: (data.id || id), name: data.name, value: data.value });
 	};
 
 	for (var i = 0; i < data.items.length; i++) {
 		var itemData = Zones.City.Items[data.items[i]];
 
-		this.AddItem(data.items[i], itemData);
+		this.BuildItem(itemData, data.items[i]);
 	}
 
 	for (var i = 0; i < data.mobs.length; i++) {
-		var mobData = Zones.City.Mobs[data.mobs[i].id];
-		var mobItemData = data.mobs[i].items || [];
-		mobItemData = mobItemData.slice(0);
-		for (var j = 0; j < mobItemData.length; j++) {
-			var tempItem = Zones.City.Items[mobItemData[j]];
-			tempItem.id = mobItemData[j]
-			mobItemData[j] = tempItem;
-		}
-
-		this.AddMob(data.mobs[i].id, mobData, mobItemData);
+		this._mobs.push(new Mob(data.mobs[i]));
 	}
 
 	this.Reset = function(data) {
@@ -62,12 +52,10 @@ function Room(data) {
 
 			changed = true;
 
-			this.AddItem(data.items[i], itemData);
+			this.BuildItem(itemData, data.items[i]);
 		}
 
 		for (var i = 0; i < data.mobs.length; i++) {
-			var mobData = Zones.City.Mobs[data.mobs[i].id];
-
 			var skip = true;
 			for (var j = 0; j < World._deaths.length; j++) {
 				if (World._deaths[j] == data.mobs[i].id) {
@@ -81,16 +69,7 @@ function Room(data) {
 
 			changed = true;
 
-			var mobItemData = data.mobs[i].items || [];
-
-			mobItemData = mobItemData.slice(0);
-			for (var j = 0; j < mobItemData.length; j++) {
-				var tempItem = Zones.City.Items[mobItemData[j]];
-				tempItem.id = mobItemData[j]
-				mobItemData[j] = tempItem;
-			}
-
-			this.AddMob(data.mobs[i].id, mobData, mobItemData);
+			this._mobs.push(new Mob(data.mobs[i]));
 		}
 
 		return changed;
@@ -117,14 +96,15 @@ function Room(data) {
 		return Util.Find(this, this._mobs, function (mob) { return (mob.name == name); });
 	};
 
-	this.DropItem = function(player, id) {
-		var itemData = Zones.City.Items[id];
-
+	this.DropItem = function(player, name) {
 		for (var i = 0; i < player._items.length; i++) {
-			if (player._items[i].id == id) {
+			if (player._items[i].name == name) {
+				var id = player._items[i].id;
+				var itemData = Zones.City.Items[id];
+
 				Server.BroadcastMessage('DropItem', { name: player.username, item: player._items[i].name }, player, this);
 
-				this.AddItem(id, itemData);
+				this.BuildItem(itemData, id);
 
 				player._items.splice(i, 1);
 				return;

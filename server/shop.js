@@ -11,11 +11,12 @@ function Shop(id, mob) {
 
 		for (var i = 0; i < this._items.length; i++) {
 			var item = this._items[i];
+			var itemData = Zones.City.Items[item];
 
 			list.push({
-				id: item.id,
-				name: item.name,
-				price: item.value * this._priceScale
+				id: item,
+				name: itemData.name,
+				value: itemData.value * this._priceScale
 			});
 		}
 
@@ -29,18 +30,20 @@ function Shop(id, mob) {
 	this.BuyItem = function (socket, item) {
 		var player = Server.GetPlayer(socket.id);
 
-		var item = Util.Find(this, this._items, function (i) {
-			return (i.id == item);
-		});
+		var itemData = Zones.City.Items[item];
 
-		if (player._gold < item.value * this._priceScale) {
+		if (player._gold < itemData.value * this._priceScale) {
 			Server.BroadcastMessage('FundsItem', { }, player, null);
 			return;
 		}
 
-		player._items.push(item);
-		Server.BroadcastMessage('BoughtItem', { name: item.name }, player, null);
+		player.GetItem({ id: item, name: itemData.name });
+		player._gold -= itemData.value * this._priceScale;
+
+		Server.BroadcastMessage('BoughtItem', { name: itemData.name }, player, null);
 		Server.SyncPlayer(player);
+
+		this.ListItems(socket);
 	}
 }
 

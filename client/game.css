@@ -50,6 +50,7 @@ input {
 	float: left;
 	border-top: 4px solid hsl(0, 0%, 90%);
 	position: relative;
+	display: none;
 }
 
 .xp {
@@ -221,7 +222,6 @@ input {
 }
 
 .overlay {
-	display: none;
 	width: 100%;
 	height: 100%;
 	top: 0px;

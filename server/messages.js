@@ -32,6 +32,10 @@ var Messages = {
 			player: 'you are already fighting',
 			type: 'info'
 		},
+		Fighting: {
+			player: 'you are fighting',
+			type: 'info'
+		},
 		NotHere: {
 			player: 'they are not here',
 			type: 'info'

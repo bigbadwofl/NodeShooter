@@ -35,7 +35,7 @@ function Player() {
 
 	this.GetItem = function (item) {
 		if (item.id == 'gold') {
-			this._gold += item.price;
+			this._gold += item.value;
 
 			return;
 		}
@@ -102,6 +102,9 @@ function Player() {
 	};
 
 	this.Save = function () {
+		if (this.room == null)
+			return;
+		
 		var data = {
 			level: this._level,
 			xp: this._xp,

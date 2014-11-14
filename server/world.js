@@ -108,6 +108,11 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
+		if (player._fighting) {
+			Server.BroadcastMessage('Fighting', {}, player, null);
+			return;
+		}
+
 		var exit = room._exits[data.data.direction];
 
 		if (exit == null)
@@ -134,7 +139,7 @@ var World = {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
 
-		room.DropItem(player, data.data.id);
+		room.DropItem(player, data.data.name);
 		this.SyncRoom(room);
 
 		Server.SyncPlayer(player);
@@ -188,7 +193,6 @@ var World = {
 		}
 
 		roomData._items = roomData._items.slice(0);
-
 		for (var i = 0; i < roomData._items.length; i++) {
 			roomData._items[i] = roomData._items[i].name;
 		}

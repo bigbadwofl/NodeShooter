@@ -91,6 +91,9 @@ var Server = {
 	SyncPlayer: function (player) {
 		var data = Serializer.Serialize('PLAYER', player);
 		data._items = data._items.slice(0);
+		for (var i = 0; i < data._items.length; i++) {
+			data._items[i] = data._items[i].name;
+		}
 
 		data._xp = player._xp / player._xpMax;
 

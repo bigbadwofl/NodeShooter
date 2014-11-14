@@ -10,12 +10,10 @@ var Game = {
         .appendTo(itemDiv);
 
         Player._items.forEach(function (item) {
-            $('<span>' + item.name + '</span>')
+            $('<span>' + item + '</span>')
             .appendTo(itemDiv)
-            .attr('id', item.id)
             .on('click', function () {
                 Game.SendRequest('World', 'DropItem', {
-                    id: $(this).attr('id'),
                     name: $(this).html()
                 });
             });
@@ -26,10 +24,6 @@ var Game = {
             window[data.type][data.method](data.data);
         });
 
-        $('#btnShowLogin').on('click', function() {
-            Util.ShowHide('.overlay');
-        });
-
         $('#btnLogin').on('click', function() {
             var username = $('#txtUsername').val();
             Game._username = username;
@@ -37,39 +31,36 @@ var Game = {
             Game.SendRequest('Server', 'SetName', { username: Game._username });
 
             $('#info').empty();
-            Util.ShowHide('!#inventory #buttonPanel');
         });
 
         $('#btnInventory').on('click', function() {
             Game.BuildInventory();
 
             $('#inventory-heading').html('Inventory');
-            Util.ShowHide('#inventory !#buttonPanel');
+            GameStates.Set('sidebar');
         });
 
         $('#btnCloseInventory').on('click', function() {
-           Util.ShowHide('!#inventory #buttonPanel');
+           GameStates.Set('sidebuttons');
         });
 
         $('#btnChat').on('click', function () {
             $('#txtChat').val('');
-            Util.ShowHide('!.xp-box .chat-box');
+            GameStates.Set('bottomchat');
         });
 
         $('#btnSendChat').on('click', function () {
             Game.SendRequest('World', 'SendMessage', { message: $('#txtChat').val() });
-            Util.ShowHide('.xp-box !.chat-box');
+            GameStates.Set('bottomxp');
         });
 
         $('#btnCancelChat').on('click', function () {
-            Util.ShowHide('.xp-box !.chat-box');
+            GameStates.Set('bottomxp');
         });
-
-        Util.ShowHide('!.chat-box');
     },
     GetPlayer: function (data) {
-        if (!$('#game').is(':visible'))
-            Util.ShowHide('!.overlay #game');
+        if (GameStates._state != 'game')
+            GameStates.Set('game');
 
         Player = data;
 
@@ -83,7 +74,7 @@ var Game = {
         $('#hud').html('hp: ' + Player._hp);
     },
     Disconnect: function () {
-        Util.ShowHide('.overlay !#game');
+        GameSates.Set('login');
     },
     GetMessage: function (data) {
         var div = $('#info');
@@ -99,9 +90,6 @@ var Game = {
         div = div[0];
         div.scrollTop = div.scrollHeight;
     },
-    SendInfo: function () {
-        Util.ShowHide('.overlay !#game');
-    },
     SendRequest: function (type, method, data) {
         socket.emit('Request', {
             type: type,
@@ -116,17 +104,17 @@ var Shop = {
     ListItems: function (data) {
         this._shopID = data.id;
 
-        Util.ShowHide('#inventory !#buttonPanel');
+        GameStates.Set('sidebar');
 
         $('#inventory-heading').html(data.name);
         var contentDiv = $('#inventory-contents');
         contentDiv.empty();
 
         data.items.forEach(function (item) {
-            $('<span>' + item.name + ' (' + item.price + ')</span>')
+            $('<span>' + item.name + ' (' + item.value + ')</span>')
             .appendTo(contentDiv)
             .attr('id', item.id)
-            .attr('price', item.price)
+            .attr('value', item.value)
             .on('click', function () {
                 Game.SendRequest('World', 'BuyItem', { mob: Shop._shopID, item: $(this).attr('id') });
             });
@@ -197,5 +185,19 @@ var Util = {
             (el[0] == '!') && (method = 'hide') && (el = el.substring(1, el.length));
             $(el)[method]();
         });
+    }
+};
+
+var GameStates = {
+    _state: 'login',
+    _game: '!.overlay #game .xp-box',
+    _login: '.overlay !#game',
+    _sidebar: '#inventory !#buttonPanel',
+    _sidebuttons: '!#inventory #buttonPanel',
+    _bottomchat: '!.xp-box .chat-box',
+    _bottomxp: '.xp-box !.chat-box',
+    Set: function (name) {
+        this._state = name;
+        Util.ShowHide(this['_' + name]);
     }
 };

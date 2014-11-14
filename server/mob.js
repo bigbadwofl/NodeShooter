@@ -1,26 +1,28 @@
 var Random = require('./random.js');
 var Shop = require('./shop.js');
 
-function Mob(id, data, items) {
-	this.id = id;
-	this.name = data.name;
-	this.hp = data.lvl;
-	this.lvl = data.lvl;
-	this.dmg = data.lvl;
-	this.items = items;
+function Mob(data) {
+	var mobData = Zones.City.Mobs[data.id];
+
+	this.id = data.id;
+	this.name = mobData.name;
+	this.hp = mobData.lvl;
+	this.lvl = mobData.lvl;
+	this.dmg = mobData.lvl;
+	this.items = data.items || [];
 	this._fighting = false;
-	this._handler = data.handler;
+	this._handler = mobData.handler;
 
-	this._roam = !!data.roam;
-	this._hostile = !!data.hostile;
+	this._roam = !!mobData.roam;
+	this._hostile = !!mobData.hostile;
 
-	this._prefix = data.prefix;
+	this._prefix = mobData.prefix;
 	(this._prefix == null) && (this._prefix = 'the ');
-	this._shop = data.shop && (new Shop(data.shop, this));
-	this._gold = data.gold || 0;
+	this._shop = mobData.shop && (new Shop(mobData.shop, this));
+	this._gold = mobData.gold || 0;
 
 	this.Move = function(room) {
-	if ((!this._roam) || (this._fighting) || (Random.Int(0, 10) > 0)) {
+		if ((!this._roam) || (this._fighting) || (Random.Int(0, 10) > 0)) {
 			if ((!this._fighting) && (this._handler != null))
 				this[this._handler](room);
 
@@ -57,14 +59,15 @@ function Mob(id, data, items) {
 				Server.BroadcastMessage('MobLoot', { name: this.name, p: this._prefix }, null, room);
 
 			if (this._gold > 0) {
-				room.AddItem('gold', {
+				room.BuildItem({
+					id: 'gold',
 					name: this._gold + ' coins',
-					price: this._gold
+					value: this._gold
 				});
 			}
 
 			for (var j = 0; j < this.items.length; j++) {
-				room.AddItem(this.items[j].id, this.items[j]);
+				room.BuildItem(Zones.City.Items[this.items[j]], this.items[j]);
 			}
 
 			player.GetXP(this);

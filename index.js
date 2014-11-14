@@ -26,7 +26,6 @@ app.get(/^(.*)$/, function(req, res, next) {
 
 io.on('connection', function(socket) {
     Server.Connect(socket);
-    Server.SendResponse(socket, 'Game', 'SendInfo');
 
     socket.on('disconnect', function() {
         Server.Disconnect(socket);
