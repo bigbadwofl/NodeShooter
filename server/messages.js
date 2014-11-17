@@ -135,7 +135,7 @@ var Messages = {
 			type: 'error'
 		},
 		BoughtItem: {
-			player: 'you bought a $name',
+			player: 'you bought: $name',
 			type: 'error'
 		},
 		FundsItem: {

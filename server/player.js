@@ -10,7 +10,7 @@ function Player() {
 	this._xp = 0;
 	this._xpMax = 10;
 	this._level = 1;
-	this._gold = 0;
+	this._gold = 1000;
 
 	this.ResetItems = function () {
 		this._items = [ ];
