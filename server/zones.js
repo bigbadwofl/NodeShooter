@@ -60,23 +60,28 @@ var Zones = {
 		Items: {
 			i0: {
 				name: 'Sword',
-				value: 10
+				value: 10,
+				slot: '1HWeapon'
 			},
 			i1: {
 				name: 'Mop of Power',
-				value: 10
+				value: 10,
+				slot: '2HWeapon'
 			},
 			i2: {
 				name: 'Stinky Potion',
-				value: 5
+				value: 5,
+				slot: 'Misc'
 			},
 			i3: {
 				name: 'Broom',
-				value: 1
+				value: 1,
+				slot: '2HWeapon'
 			},
 			i4: {
 				name: 'Sack of the Absolute',
-				value: 100
+				value: 100,
+				slot: 'Head'
 			}
 		},
 		Mobs: {

@@ -28,6 +28,16 @@ var Messages = {
 			room: '$name dropped: $item',
 			type: 'error'
 		},
+		Equip: {
+			player: 'you equipped: $item',
+			room: '$name equipped: $item',
+			type: 'info'
+		},
+		Unequip: {
+			player: 'you unequipped: $item',
+			room: '$name unequipped: $item',
+			type: 'info'
+		},
 		AlreadyFighting: {
 			player: 'you are already fighting',
 			type: 'info'

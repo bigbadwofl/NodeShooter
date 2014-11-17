@@ -92,7 +92,7 @@ var Server = {
 		var data = Serializer.Serialize('PLAYER', player);
 		data._items = data._items.slice(0);
 		for (var i = 0; i < data._items.length; i++) {
-			data._items[i] = data._items[i].name;
+			data._items[i] = { name: data._items[i].name, slot: data._items[i].slot };
 		}
 
 		data._xp = player._xp / player._xpMax;

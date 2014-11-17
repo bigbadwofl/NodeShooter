@@ -2,6 +2,7 @@ var jsonpack = require('jsonpack/main');
 
 function Player() {
 	this._items = [];
+	this._eq = {};
 	this.followers = [];
 	this._fighting = false;
 	this._hp = 10;
@@ -13,6 +14,7 @@ function Player() {
 
 	this.ResetItems = function () {
 		this._items = [ ];
+		this._gold = 1000;
 	};
 
 	this.Follow = function (playerName) {
@@ -41,6 +43,36 @@ function Player() {
 		}
 
 		this._items.push(item);
+	};
+
+	this.EquipItem = function (item) {
+		var item = Util.Find(this, this._items, function (i) {
+			return (i.name == item);
+		});
+
+		if (item == null)
+			return;
+
+		Server.BroadcastMessage('Equip', { name: this.username, item: item.name }, this, this.room);
+
+		this._eq[item.slot] = item;
+
+		Server.SyncPlayer(this);
+	};
+
+	this.UnequipItem = function (item) {
+		var item = Util.Find(this, this._items, function (i) {
+			return (i.name == item);
+		});
+
+		if (item == null)
+			return;
+
+		Server.BroadcastMessage('Unequip', { name: this.username, item: item.name }, this, this.room);
+
+		delete this._eq[item.slot];
+
+		Server.SyncPlayer(this);
 	};
 
 	this.GetXP = function (mob) {
@@ -110,6 +142,7 @@ function Player() {
 			xp: this._xp,
 			gold: this._gold,
 			items: this._items,
+			eq: this._eq,
 			room: this.room._id
 		};
 
@@ -128,6 +161,7 @@ function Player() {
 				var data = jsonpack.unpack(result);
 
 				player._items = data.items;
+				player._eq = data.eq || {};
 				player._level = data.level;
 				player._gold = data.gold;
 				player._xp = data.xp;

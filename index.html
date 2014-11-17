@@ -21,10 +21,11 @@
 
 		<div id='buttonPanel'>
 			<button id="btnInventory">Inventory</button>
+			<button id="btnEquipment">Equipment</button>
 			<button id="btnChat">Chat</button>
 		</div>
 
-		<div id="inventory">
+		<div id="inventory" oncontextmenu="return false;">
 			<span id="inventory-heading">Inventory</span>
 			<div id="inventory-contents"></div>
 			<button id="btnCloseInventory">Close</button>
@@ -51,6 +52,7 @@
 	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/client/game.css">
+	<link rel="stylesheet/less" type="text/css" href="/client/styles/override.less">
 
 	<script src="/server/random.js"></script>
 	<script src="/client/game.js"></script>

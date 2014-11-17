@@ -26,7 +26,7 @@ function Room(data) {
 	};
 
 	this.BuildItem = function (data, id) {
-		this._items.push({ id: (data.id || id), name: data.name, value: data.value });
+		this._items.push({ id: (data.id || id), name: data.name, value: data.value, slot: data.slot });
 	};
 
 	for (var i = 0; i < data.items.length; i++) {

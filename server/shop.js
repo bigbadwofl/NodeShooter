@@ -37,7 +37,7 @@ function Shop(id, mob) {
 			return;
 		}
 
-		player.GetItem({ id: item, name: itemData.name });
+		player.GetItem({ id: item, name: itemData.name, slot: itemData.slot });
 		player._gold -= itemData.value * this._priceScale;
 
 		Server.BroadcastMessage('BoughtItem', { name: itemData.name }, player, null);

@@ -2,23 +2,6 @@ var socket = io();
 
 var Game = {
     _username: '',
-    BuildInventory: function () {
-        var itemDiv = $('#inventory-contents');
-        itemDiv.empty();
-
-        $('<span>' + Player._gold + ' coins</span>')
-        .appendTo(itemDiv);
-
-        Player._items.forEach(function (item) {
-            $('<span>' + item + '</span>')
-            .appendTo(itemDiv)
-            .on('click', function () {
-                Game.SendRequest('World', 'DropItem', {
-                    name: $(this).html()
-                });
-            });
-        });
-    },
     Init: function () {
         socket.on('Response', function (data) {
             window[data.type][data.method](data.data);
@@ -34,9 +17,16 @@ var Game = {
         });
 
         $('#btnInventory').on('click', function() {
-            Game.BuildInventory();
+            Inventory.ListItems();
 
             $('#inventory-heading').html('Inventory');
+            GameStates.Set('sidebar');
+        });
+
+         $('#btnEquipment').on('click', function() {
+            Equipment.ListItems();
+
+            $('#inventory-heading').html('Equipment');
             GameStates.Set('sidebar');
         });
 
@@ -65,7 +55,9 @@ var Game = {
         Player = data;
 
         if (($('#inventory').is(':visible')) && ($('#inventory-heading').html() == 'Inventory'))
-            this.BuildInventory();
+            Inventory.ListItems();
+        else if (($('#inventory').is(':visible')) && ($('#inventory-heading').html() == 'Equipment'))
+            Equipment.ListItems();
 
         //XP Bar
         $('.xp').css('width', ~~(data._xp * 100) + '%');
@@ -122,6 +114,58 @@ var Shop = {
 
          $('<span id="shopGold">' + Player._gold + ' coins</span>')
         .appendTo(contentDiv);
+    }
+};
+
+var Inventory = {
+    ListItems: function () {
+        GameStates.Set('sidebar');
+
+        $('#inventory-heading').html('Inventory');
+        var contentDiv = $('#inventory-contents');
+        contentDiv.empty();
+
+        Player._items.forEach(function (item) {
+            var eq = Player._eq[item.slot];
+            if ((eq != null) && (eq.name == item.name))
+                return;
+
+            $('<span>' + item.name + '</span>')
+            .appendTo(contentDiv)
+            .on('mousedown', function (e) {
+                if (e.button == 0) {
+                    Game.SendRequest('World', 'DropItem', {
+                        name: $(this).html()
+                    });
+                }
+                else if (e.button == 2) {
+                    Game.SendRequest('World', 'EquipItem', {
+                        name: $(this).html()
+                    });
+                }
+            });
+        });
+    }
+};
+
+var Equipment = {
+    ListItems: function () {
+        GameStates.Set('sidebar');
+
+        $('#inventory-heading').html('Equipment');
+        var contentDiv = $('#inventory-contents');
+        contentDiv.empty();
+
+        for (var p in Player._eq) {
+            $('<span>' + p + ': ' + Player._eq[p].name + '</span>')
+            .appendTo(contentDiv)
+            .attr('name', Player._eq[p].name)
+            .on('click', function () {
+                Game.SendRequest('World', 'UnequipItem', {
+                    name: $(this).attr('name')
+                });
+            });
+        }
     }
 };
 

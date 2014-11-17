@@ -144,6 +144,14 @@ var World = {
 
 		Server.SyncPlayer(player);
 	},
+	EquipItem: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		player.EquipItem(data.data.name);
+	},
+	UnequipItem: function (socket, data) {
+		var player = Server.GetPlayer(socket.id);
+		player.UnequipItem(data.data.name);
+	},
 	BuyItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
 		var mob = player.room.GetMob(data.data.mob);
