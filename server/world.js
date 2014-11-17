@@ -33,7 +33,7 @@ var World = {
 		zone.Rooms.forEach(function (roomData) {
 			var room = World._rooms[roomData.id];
 			if (room.Reset(roomData))
-				World.SyncRoom(room);
+				room.Sync();
 		});
 	},
 	Update: function (zoneName) {
@@ -59,7 +59,7 @@ var World = {
 			var killed = fight._player.room.AttackMob(fight._player, fight._mob.name);
 			fight._player._fighting = !killed;
 			
-			World.SyncRoom(fight._player.room);
+			fight._player.room.Sync();
 
 			if (fight._player._hp <= 0) {
 				fight._player.Die();
@@ -89,21 +89,6 @@ var World = {
 			}
 		}
 	},
-	GetRoom: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		var room = player.room;
-
-		if (room != null) {
-			room.RemovePlayer(socket.id, player.followers);
-			this.SyncRoom(room);
-		}
-
-		room = this._rooms[data.data.id];
-		room.AddPlayer(socket.id, player.followers);
-		player.room = room;
-
-		this.SyncRoom(room);
-	},
 	Move: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
 		var room = player.room;
@@ -120,37 +105,7 @@ var World = {
 
 		player.Unfollow();
 
-		this.GetRoom(socket, {
-			data: {
-				id: exit
-			}
-		});
-	},
-	GetItem: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		var room = player.room;
-
-		room.GetItem(player, data.data.name);
-		this.SyncRoom(room);
-
-		Server.SyncPlayer(player);
-	},
-	DropItem: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		var room = player.room;
-
-		room.DropItem(player, data.data.name);
-		this.SyncRoom(room);
-
-		Server.SyncPlayer(player);
-	},
-	EquipItem: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		player.EquipItem(data.data.name);
-	},
-	UnequipItem: function (socket, data) {
-		var player = Server.GetPlayer(socket.id);
-		player.UnequipItem(data.data.name);
+		player.SetRoom(exit);
 	},
 	BuyItem: function (socket, data) {
 		var player = Server.GetPlayer(socket.id);
@@ -191,26 +146,6 @@ var World = {
 		var fromPlayer = Server.GetPlayer(socket.id);
 
 		Server.BroadcastMessage('DoSay', { name: fromPlayer.username, message: data.data.message }, fromPlayer, fromPlayer.room);
-	},
-	SyncRoom: function (room) {
-		var roomData = Serializer.Serialize('ROOM', room);
-		roomData._players = roomData._players.slice(0);
-
-		for (var i = 0; i < roomData._players.length; i++) {
-			roomData._players[i] = Server._players[roomData._players[i]].username;
-		}
-
-		roomData._items = roomData._items.slice(0);
-		for (var i = 0; i < roomData._items.length; i++) {
-			roomData._items[i] = roomData._items[i].name;
-		}
-
-		for (var i = 0; i < room._players.length; i++) {
-			var player = room._players[i];
-			var socket = Server.GetPlayer(player).socket;
-
-			Server.SendResponse(socket, 'World', 'GetRoom', roomData);
-		}
 	}
 };
 

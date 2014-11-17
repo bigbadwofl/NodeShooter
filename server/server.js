@@ -48,7 +48,7 @@ var Server = {
 			var room = player.room;
 			player.room = null;
 
-			World.SyncRoom(room);
+			room.Sync();
 		}
 		
 		delete this._players[socket.id];
@@ -87,17 +87,6 @@ var Server = {
 			method: method,
 			data: data
 		});
-	},
-	SyncPlayer: function (player) {
-		var data = Serializer.Serialize('PLAYER', player);
-		data._items = data._items.slice(0);
-		for (var i = 0; i < data._items.length; i++) {
-			data._items[i] = { name: data._items[i].name, slot: data._items[i].slot };
-		}
-
-		data._xp = player._xp / player._xpMax;
-
-		this.SendResponse(player.socket, 'Game', 'GetPlayer', data);
 	}
 };
 

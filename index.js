@@ -8,6 +8,8 @@ GLOBAL.Serializer = require('./server/serializer.js');
 GLOBAL.Messages = require('./server/messages.js');
 GLOBAL.Events = require('./server/events.js');
 GLOBAL.Util = require('./server/util.js');
+GLOBAL.Items = require('./server/item.js');
+
 GLOBAL.moment = require('moment');
 
 World.Init();
@@ -40,7 +42,14 @@ io.on('connection', function(socket) {
         msg.id = socket.id;
         msg.data || (msg.data = {});
 
-        GLOBAL[msg.type][msg.method](socket, msg);
+        if (msg.type == 'Player')
+            Server.GetPlayer(socket.id)[msg.method](msg.data);
+        else if (msg.type == 'Room') {
+            var player = Server.GetPlayer(socket.id);
+            player.room.GetItem(player, msg.data);
+        }
+        else
+            GLOBAL[msg.type][msg.method](socket, msg);
     });
 });
 

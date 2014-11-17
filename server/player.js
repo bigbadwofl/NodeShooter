@@ -2,7 +2,6 @@ var jsonpack = require('jsonpack/main');
 
 function Player() {
 	this._items = [];
-	this._eq = {};
 	this.followers = [];
 	this._fighting = false;
 	this._hp = 10;
@@ -45,9 +44,15 @@ function Player() {
 		this._items.push(item);
 	};
 
-	this.EquipItem = function (item) {
+	this.DropItem = function (itemName) {
+		this.room.DropItem(this, itemName);
+		this.room.Sync();
+		this.Sync();
+	};
+
+	this.EquipItem = function (itemName) {
 		var item = Util.Find(this, this._items, function (i) {
-			return (i.name == item);
+			return (i.name == itemName);
 		});
 
 		if (item == null)
@@ -55,14 +60,29 @@ function Player() {
 
 		Server.BroadcastMessage('Equip', { name: this.username, item: item.name }, this, this.room);
 
-		this._eq[item.slot] = item;
+		item.eq = true;
 
-		Server.SyncPlayer(this);
+		this.Sync();
 	};
 
-	this.UnequipItem = function (item) {
+	this.SetRoom = function (id) {
+		var room = this.room;
+
+		if (room != null) {
+			room.RemovePlayer(this.socket.id, this.followers);
+			room.Sync();
+		}
+
+		room = World._rooms[id];
+		room.AddPlayer(this.socket.id, this.followers);
+		this.room = room;
+
+		room.Sync();
+	};
+
+	this.UnequipItem = function (itemName) {
 		var item = Util.Find(this, this._items, function (i) {
-			return (i.name == item);
+			return (i.name == itemName);
 		});
 
 		if (item == null)
@@ -70,9 +90,9 @@ function Player() {
 
 		Server.BroadcastMessage('Unequip', { name: this.username, item: item.name }, this, this.room);
 
-		delete this._eq[item.slot];
+		delete item.eq;
 
-		Server.SyncPlayer(this);
+		this.Sync();
 	};
 
 	this.GetXP = function (mob) {
@@ -89,7 +109,7 @@ function Player() {
 			Server.BroadcastMessage('AdvanceLevel', { name: this.username }, this, this.room);
 		}
 
-		Server.SyncPlayer(this);
+		this.Sync();
 	};
 
 	this.Die = function () {
@@ -99,8 +119,8 @@ function Player() {
 		this.RegenHP(true);
 
 		Server.BroadcastMessage('Died', { name: this.username }, this, this.room);
-		World.GetRoom(this.socket, { data: { id: 'r3' } });
-		Server.SyncPlayer(this);
+		this.SetRoom('r3');
+		this.Sync();
 	};
 
 	this.RegenHP = function (max) {
@@ -142,11 +162,18 @@ function Player() {
 			xp: this._xp,
 			gold: this._gold,
 			items: this._items,
-			eq: this._eq,
 			room: this.room._id
 		};
 
-		GAE.Set('player', this.username, jsonpack.pack(data));
+		for (var i = 0; i < data.items.length; i++) {
+			var item = data.items[i];
+			var id = item.id;
+			item.eq && (id += '|e');
+
+			data.items[i] = id;
+		}
+
+		GAE.Set('player', this.username, JSON.stringify(data));
 	};
 
 	this.Load = function () {
@@ -158,10 +185,9 @@ function Player() {
 			if (result == null)
 				player.ResetItems();
 			else {
-				var data = jsonpack.unpack(result);
+				var data = JSON.parse(result);
 
 				player._items = data.items;
-				player._eq = data.eq || {};
 				player._level = data.level;
 				player._gold = data.gold;
 				player._xp = data.xp;
@@ -170,17 +196,27 @@ function Player() {
 				player._hpMax = 9 + player._level;
 				player._hp = player._hpMax;
 
+				for (var i = 0; i < player._items.length; i++) {
+					player._items[i] = Items.Build(player._items[i]);
+				}
+
 				if (data.room)
 					room = data.room;
 			}
 
 			if (player.room != null)
-				World.SyncRoom(player.room);
+				player.room.Sync();
 			else
-				World.GetRoom(player.socket, {	data: {	id: room } });
+				player.SetRoom(room);
 
-			Server.SyncPlayer(player);
+			player.Sync();
 		});
+	};
+
+	this.Sync = function () {
+		var data = Serializer.Serialize('PLAYER', this);
+		data._xp = this._xp / this._xpMax;
+		Server.SendResponse(this.socket, 'Game', 'GetPlayer', data);
 	};
 }
 

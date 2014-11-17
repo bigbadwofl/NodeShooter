@@ -38,9 +38,9 @@ function Mob(data) {
 
 		newRoom._mobs.push(this);
 
-		World.SyncRoom(room);
+		room.Sync();
 		Server.BroadcastMessage('MobLeft', { name: this.name, p: this._prefix }, null, room);
-		World.SyncRoom(newRoom);
+		newRoom.Sync();
 		Server.BroadcastMessage('MobArrived', { name: this.name, p: this._prefix }, null, newRoom);
 
 		return true;
@@ -59,15 +59,11 @@ function Mob(data) {
 				Server.BroadcastMessage('MobLoot', { name: this.name, p: this._prefix }, null, room);
 
 			if (this._gold > 0) {
-				room.BuildItem({
-					id: 'gold',
-					name: this._gold + ' coins',
-					value: this._gold
-				});
+				room.BuildItem('gold', this._gold);
 			}
 
 			for (var j = 0; j < this.items.length; j++) {
-				room.BuildItem(Zones.City.Items[this.items[j]], this.items[j]);
+				room.BuildItem(this.items[j]);
 			}
 
 			player.GetXP(this);
@@ -91,7 +87,7 @@ function Mob(data) {
 
 			if (doHit) {
 				player.TakeDamage(this);
-				Server.SyncPlayer(player);
+				player.Sync();
 			}
 			else
 				doBroadcast('MobDoMissed');
@@ -108,7 +104,8 @@ function Mob(data) {
 		var item = Random.El(items);
 
 		room.GetItem(this, item.name);
-		World.SyncRoom(room);
+		room.Sync();
+		console.log(this.items);
 		Server.BroadcastMessage('JanitorClean', { name: this.name, p: this._prefix }, null, room);
 	};
 

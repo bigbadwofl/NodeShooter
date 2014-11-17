@@ -28,6 +28,7 @@
 *Context menu for items
 *Sort out mob chance to move/handler
 *Rewrite fighting interval
+*Hostile mobs should auto attack when respawning
 
 DONE
 *Chat box

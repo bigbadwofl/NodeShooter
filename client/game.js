@@ -126,25 +126,22 @@ var Inventory = {
         contentDiv.empty();
 
         Player._items.forEach(function (item) {
-            var eq = Player._eq[item.slot];
-            if ((eq != null) && (eq.name == item.name))
+            if (item.eq)
                 return;
 
             $('<span>' + item.name + '</span>')
             .appendTo(contentDiv)
             .on('mousedown', function (e) {
                 if (e.button == 0) {
-                    Game.SendRequest('World', 'DropItem', {
-                        name: $(this).html()
-                    });
+                    Game.SendRequest('Player', 'DropItem', $(this).html());
                 }
                 else if (e.button == 2) {
-                    Game.SendRequest('World', 'EquipItem', {
-                        name: $(this).html()
-                    });
+                    Game.SendRequest('Player', 'EquipItem', $(this).html());
                 }
             });
         });
+
+        $('<span>' + Player._gold + ' coins</span>').appendTo(contentDiv)
     }
 };
 
@@ -156,16 +153,17 @@ var Equipment = {
         var contentDiv = $('#inventory-contents');
         contentDiv.empty();
 
-        for (var p in Player._eq) {
-            $('<span>' + p + ': ' + Player._eq[p].name + '</span>')
+        Player._items.forEach(function (item) {
+            if (!item.eq)
+                return;
+
+            $('<span>' + item.slot + ': ' + item.name + '</span>')
             .appendTo(contentDiv)
-            .attr('name', Player._eq[p].name)
+            .attr('name',item.name)
             .on('click', function () {
-                Game.SendRequest('World', 'UnequipItem', {
-                    name: $(this).attr('name')
-                });
+                 Game.SendRequest('Player', 'UnequipItem', $(this).attr('name'));
             });
-        }
+        });
     }
 };
 
@@ -201,7 +199,7 @@ var World = {
             .appendTo($('#room-text .mobs'))
             .attr('name', mob.name)
             .on('click', function () {
-                Game.SendRequest('World', 'AttackMob', { name: $(this).attr('name') }) 
+                Game.SendRequest('World', 'AttackMob', { name: $(this).attr('name') });
             });
         });
 
@@ -209,7 +207,7 @@ var World = {
             $('<div>' + item + '</div>')
             .appendTo($('#room-text .items'))
             .on('click', function () { 
-                Game.SendRequest('World', 'GetItem', { name: $(this).html() }) 
+                Game.SendRequest('Room', 'GetItem', $(this).html());
             });
         });
 

@@ -25,14 +25,12 @@ function Room(data) {
 		this._mobs.push(mob);
 	};
 
-	this.BuildItem = function (data, id) {
-		this._items.push({ id: (data.id || id), name: data.name, value: data.value, slot: data.slot });
+	this.BuildItem = function (id, data) {
+		this._items.push(Items.Build(id, data));
 	};
 
 	for (var i = 0; i < data.items.length; i++) {
-		var itemData = Zones.City.Items[data.items[i]];
-
-		this.BuildItem(itemData, data.items[i]);
+		this.BuildItem(data.items[i]);
 	}
 
 	for (var i = 0; i < data.mobs.length; i++) {
@@ -43,16 +41,14 @@ function Room(data) {
 		var changed = false;
 
 		for (var i = 0; i < data.items.length; i++) {
-			var itemData = Zones.City.Items[data.items[i]];
-
 			if (this._items.some(function(findItem) {
-				return (findItem.id == itemData.id);
+				return (findItem.id == data.items[i].id);
 			}))
 				continue;
 
 			changed = true;
 
-			this.BuildItem(itemData, data.items[i]);
+			this.BuildItem(data.items[i]);
 		}
 
 		for (var i = 0; i < data.mobs.length; i++) {
@@ -78,18 +74,22 @@ function Room(data) {
 	this.GetItem = function(player, name) {
 		for (var i = 0; i < this._items.length; i++) {
 			if (this._items[i].name == name) {
-				if (player.items == null)
+				if (player.items == null) {
 					player.GetItem(this._items[i]);
+					player.Sync();
+				}
 				else
-					player.items.push(this._items[i]);
+					player.items.push(this._items[i].id);
 
 				if (player.socket != null)
 					Server.BroadcastMessage('TakeItem', { name: player.username, item: name }, player, this);
 
 				this._items.splice(i, 1);
-				return;
+				break;
 			}
 		}
+
+		this.Sync();
 	};
 
 	this.GetMob = function (name) {
@@ -100,11 +100,10 @@ function Room(data) {
 		for (var i = 0; i < player._items.length; i++) {
 			if (player._items[i].name == name) {
 				var id = player._items[i].id;
-				var itemData = Zones.City.Items[id];
 
 				Server.BroadcastMessage('DropItem', { name: player.username, item: player._items[i].name }, player, this);
 
-				this.BuildItem(itemData, id);
+				this.BuildItem(id);
 
 				player._items.splice(i, 1);
 				return;
@@ -165,6 +164,27 @@ function Room(data) {
 			Util.RemoveWhere(this, this._players, function(player) {
 				return (player == follower.socket.id);
 			});
+		}
+	};
+
+	this.Sync = function () {
+		var roomData = Serializer.Serialize('ROOM', this);
+		roomData._players = roomData._players.slice(0);
+
+		for (var i = 0; i < roomData._players.length; i++) {
+			roomData._players[i] = Server._players[roomData._players[i]].username;
+		}
+
+		roomData._items = roomData._items.slice(0);
+		for (var i = 0; i < roomData._items.length; i++) {
+			roomData._items[i] = roomData._items[i].name;
+		}
+
+		for (var i = 0; i < this._players.length; i++) {
+			var player = this._players[i];
+			var socket = Server.GetPlayer(player).socket;
+
+			Server.SendResponse(socket, 'World', 'GetRoom', roomData);
 		}
 	};
 };
